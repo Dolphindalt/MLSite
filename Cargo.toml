@@ -1,0 +1,8 @@
+[package]
+name = "backend"
+version = "0.1.0"
+authors = ["Dalton <dolphindalt@gmail.com>"]
+
+[dependencies]
+bson = "0.10.0"
+mongodb = "0.3.7"

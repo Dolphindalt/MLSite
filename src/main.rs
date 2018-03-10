@@ -7,17 +7,32 @@ extern crate uuid;
 extern crate iron;
 extern crate router;
 extern crate chrono;
-extern crate logger;
-extern crate env_logger;
 extern crate rustc_serialize;
 
 mod database;
 mod models;
+mod handlers;
+
+use database::Database;
+use handlers::*;
+
+use iron::prelude::Chain;
+use iron::Iron;
+use router::Router;
 
 fn main() {
+    let database = Database::new();
 
-}
+    let handlers = Handlers::new(database);
+    let json_content_middleware = JsonAfterMiddleware;
 
-fn serve() {
-    
+    let mut router = Router::new();
+    router.get("/home", handlers.news_post_feed_handler, "home");
+    router.get("/home_post", handlers.news_post_post_handler, "home_newspost");
+    router.get("/home_post/:id", handlers.news_post_handler, "home_newspost_id");
+
+    let mut chain = Chain::new(router);
+    chain.link_after(json_content_middleware);
+
+    Iron::new(chain).http("localhost:8000").unwrap();
 }

@@ -6,10 +6,8 @@ authors = ["Dalton <dolphindalt@gmail.com>"]
 [dependencies]
 bson = "0.10.0"
 mongodb = "0.3.7"
-iron = "0.2"
-router = "0.2"
-logger = "0.2"
-env_logger = "0.3"
+iron = "0.6"
+router = "0.6"
 rustc-serialize = "0.3"
 chrono = { version = "0.2", features = ["rustc-serialize"] }
 uuid = { version = "0.2", features = ["v4", "rustc-serialize"] }

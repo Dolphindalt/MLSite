@@ -1,6 +1,7 @@
 use mongodb::{Client, ThreadedClient};
 use mongodb::db::ThreadedDatabase;
 use bson;
+use uuid::Uuid;
 
 use models::NewsPost;
 
@@ -8,7 +9,7 @@ const HOSTNAME: &str = "localhost";
 const PORT: u16 = 27017;
 const DB: &str = "test";
 
-struct Database {
+pub struct Database {
     client: Client
 }
 
@@ -36,7 +37,7 @@ impl Database {
     pub fn get_news_posts(&self) -> Vec<NewsPost> {
         let mut news_posts = Vec::new();
         let collection = self.client.db(DB).collection("newsposts");
-        let mut cursor = collection.find(None, None).ok().expect("Failed to execute find");
+        let cursor = collection.find(None, None).ok().expect("Failed to execute find");
         
         for doc in cursor {
             let d = doc.unwrap();
@@ -46,4 +47,24 @@ impl Database {
         };
         news_posts
     }
+
+    pub fn find_news_post(&self, id: &Uuid) -> Option<NewsPost> {
+        let collection = self.client.db(DB).collection("newsposts");
+        let result = collection.find_one(Some(doc!{ "uuid" => id.to_string() }), None);
+
+        if let Some(doc) = result.unwrap() {
+            Some(bson::from_bson::<NewsPost>(bson::Bson::Document(doc)).unwrap())
+        } else {
+            None
+        }
+    }
+}
+
+#[test]
+fn news_posts_test() {
+    let connection = Database::new();
+
+    let posts = connection.get_news_posts();
+
+    println!("Size of posts: {}", posts.len());
 }

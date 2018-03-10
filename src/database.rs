@@ -1,5 +1,7 @@
 use mongodb::{Client, ThreadedClient};
 use mongodb::db::ThreadedDatabase;
+use mongodb::coll::results::DeleteResult;
+use mongodb::error::Error;
 use bson;
 use uuid::Uuid;
 
@@ -58,13 +60,41 @@ impl Database {
             None
         }
     }
+
+    pub fn erase_collection_where(&self, cstr: &str, query: bson::Document) {
+        let collection = self.client.db(DB).collection(cstr);
+        match collection.delete_many(query, None) {
+            Ok(_delete_result) => (),
+            Err(err) => panic!("{:?}", err),
+        }
+    }
 }
 
 #[test]
 fn news_posts_test() {
-    let connection = Database::new();
+    let mut connection = Database::new();
 
     let posts = connection.get_news_posts();
 
-    println!("Size of posts: {}", posts.len());
+    assert!(posts.len() == 0);
+
+    let p1 = NewsPost {
+        title: "The first post".to_string(),
+        body: "Behold, here is the first post".to_string(),
+        author: "Dalton Caron".to_string(),
+        datetime: "03/10/18".to_string(),
+        uuid: Uuid::new_v4().to_string(),
+    };
+
+    connection.add_news_post(p1);
+
+    let posts = connection.get_news_posts();
+
+    assert!(posts.len() == 1);
+
+    connection.erase_collection_where("newsposts", doc!{});
+
+    let posts = connection.get_news_posts();
+
+    assert!(posts.len() == 0);
 }

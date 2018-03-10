@@ -6,7 +6,6 @@ use rustc_serialize::json;
 use database::Database;
 use uuid::Uuid;
 use router::Router;
-use models::NewsPost;
 use std::error::Error;
 
 macro_rules! try_handler {

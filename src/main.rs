@@ -8,6 +8,7 @@ extern crate iron;
 extern crate router;
 extern crate chrono;
 extern crate rustc_serialize;
+extern crate serde;
 
 mod database;
 mod models;

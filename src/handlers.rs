@@ -8,6 +8,9 @@ use uuid::Uuid;
 use router::Router;
 use std::error::Error;
 
+use models::NewsPost;
+use database::NEWS_POST_COLLECTION;
+
 macro_rules! try_handler {
     ($e:expr) => {
         match $e {
@@ -70,7 +73,7 @@ impl NewsPostFeedHandler {
 
 impl Handler for NewsPostFeedHandler {
     fn handle(&self, _: &mut Request) -> IronResult<Response> {
-        let payload = try_handler!(json::encode(&lock!(self.database).get_news_posts()));
+        let payload = try_handler!(json::encode(&lock!(self.database).get_all_documents::<NewsPost>(NEWS_POST_COLLECTION)));
         Ok(Response::with((status::Ok, payload)))
     }
 }
@@ -114,7 +117,7 @@ impl Handler for NewsPostHandler {
         let id = try_handler!(Uuid::parse_str(post_id), status::BadRequest);
 
         let locked = lock!(self.database);
-        if let Some(news_post) = locked.find_news_post(&id) {
+        if let Some(news_post) = locked.find_document::<NewsPost>(NEWS_POST_COLLECTION, &id) {
             let payload = try_handler!(json::encode(&news_post), status::InternalServerError);
             Ok(Response::with((status::Ok, payload)))
         } else {

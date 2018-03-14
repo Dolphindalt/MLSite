@@ -129,6 +129,8 @@ impl Database {
 fn news_posts_test() {
     let mut connection = Database::new();
 
+    connection.erase_from_collection_where(NEWS_POST_COLLECTION, doc!{});
+
     let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
 
     assert!(posts.len() == 0);
@@ -152,4 +154,28 @@ fn news_posts_test() {
     let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
 
     assert!(posts.len() == 0);
+}
+
+#[test]
+fn insert_news_posts_test() {
+    let mut connection = Database::new();
+
+    let p1 = NewsPost {
+        title: "The first post".to_string(),
+        body: "Behold, here is the first post".to_string(),
+        author: "Dalton Caron".to_string(),
+        datetime: "03/10/18".to_string(),
+        uuid: Uuid::new_v4().to_string(),
+    };
+
+    let p2 = NewsPost {
+        title: "The second post".to_string(),
+        body: "Behold, here is the second post".to_string(),
+        author: "Dalton Caron".to_string(),
+        datetime: "03/10/18".to_string(),
+        uuid: Uuid::new_v4().to_string(),
+    };
+
+    connection.add_news_post(p1);
+    connection.add_news_post(p2);
 }

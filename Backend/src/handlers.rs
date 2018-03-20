@@ -7,6 +7,7 @@ use database::Database;
 use uuid::Uuid;
 use router::Router;
 use std::error::Error;
+use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials};
 
 use models::NewsPost;
 use database::NEWS_POST_COLLECTION;
@@ -131,6 +132,16 @@ pub struct JsonAfterMiddleware;
 impl AfterMiddleware for JsonAfterMiddleware {
     fn after(&self, _: &mut Request, mut res: Response) -> IronResult<Response> {
         res.headers.set(ContentType::json());
+        Ok(res)
+    }
+}
+
+pub struct CorsAfterMiddleWare;
+
+impl AfterMiddleware for CorsAfterMiddleWare {
+    fn after(&self, _req: &mut Request, mut res: Response) -> IronResult<Response> {
+        res.headers.set(AccessControlAllowOrigin::Any);
+        res.headers.set(AccessControlAllowCredentials);
         Ok(res)
     }
 }

@@ -26,6 +26,7 @@ fn main() {
 
     let handlers = Handlers::new(database);
     let json_content_middleware = JsonAfterMiddleware;
+    let cors_after_middleware = CorsAfterMiddleWare;
 
     let mut router = Router::new();
     router.get("/home", handlers.news_post_feed_handler, "home");
@@ -34,6 +35,7 @@ fn main() {
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);
+    chain.link_after(cors_after_middleware);
 
     Iron::new(chain).http("localhost:8000").unwrap();
 }

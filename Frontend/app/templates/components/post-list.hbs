@@ -1,0 +1,7 @@
+{{#each-in data as |key value|}}
+    <h1>{{value.title}}</h1>
+    <p>{{value.body}}</p>
+    <small>{{value.author}} {{value.datetime}}</small>
+{{/each-in}}
+
+{{yield}}

@@ -7,7 +7,8 @@ use database::Database;
 use uuid::Uuid;
 use router::Router;
 use std::error::Error;
-use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials};
+use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders};
+use unicase::UniCase;
 
 use models::NewsPost;
 use database::NEWS_POST_COLLECTION;
@@ -142,6 +143,9 @@ impl AfterMiddleware for CorsAfterMiddleWare {
     fn after(&self, _req: &mut Request, mut res: Response) -> IronResult<Response> {
         res.headers.set(AccessControlAllowOrigin::Any);
         res.headers.set(AccessControlAllowCredentials);
+        res.headers.set(AccessControlAllowHeaders(vec![
+            UniCase("Content-Type".to_owned())
+        ]));
         Ok(res)
     }
 }

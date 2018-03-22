@@ -5,17 +5,12 @@
   once,at application start, after that you have to manually reload it or set up
   some events to get changes to propagate to this level
 --}}
-
-<h1>Something is going on</h1>
-
-{{#bs-navbar as |navbar|}}
-  {{#navbar.content}}
-    {{#navbar.nav as |nav|}}
-      {{#nav.item}}
-        {{#nav.link-to "index"}}Home{{/nav.link-to}}
-      {{/nav.item}}
-    {{/navbar.nav}}
-  {{/navbar.content}}
-{{/bs-navbar}}
-
-{{outlet}}
+<div class='grid-container'>
+  <h1>Anarcho Capitalism is the best system</h1>
+  <nav>
+    <div class='flex-container'>
+      {{#link-to "index"}}Home{{/link-to}}
+    </div>
+  </nav>
+  {{outlet}}
+</div>

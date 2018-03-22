@@ -1,1 +1,54 @@
-@import "ember-bootstrap/bootstrap";
+// app.scss
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+%center-all {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+%vertical-flex {
+    list-style: none;
+
+    display: flex;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+
+    -webkit-flex-flow: column;
+    flex-flow: column;
+    flex-direction: column;
+}
+
+.flex-container {
+    @extend %vertical-flex;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 20% 1fr 20%;
+
+    h1 {
+        font-weight: 200;
+        text-align: center;
+        grid-column: span 3;
+    }
+
+    nav {
+        border-top: 1px solid #666;
+        border-bottom: 1px solid #666;
+        grid-column: span 3;
+    }
+
+    .flex-container {
+        grid-column: 2/2;
+    }
+}
+
+@import "home";

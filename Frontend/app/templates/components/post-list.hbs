@@ -1,9 +1,5 @@
 {{#each-in data as |key value|}}
-    <div>
-        <h1>{{value.title}}</h1>
-        <p>{{value.body}}</p>
-        <small>{{value.author}} {{value.datetime}}</small>
-    </div>
+    {{component cname data=value}}
 {{/each-in}}
 
 {{yield}}

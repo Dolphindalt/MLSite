@@ -6,11 +6,6 @@ module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     'sass-options': {
       extension: 'scss'
-    },
-    'ember-bootstrap': {
-      'bootstrapVersion': 3,
-      'importBootstrapFont': true,
-      'importBootstrapCSS': false
     }
   });
 

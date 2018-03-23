@@ -1,12 +1,16 @@
 // home.scss
 
+.news-flex-container {
+    grid-column: 2/2;
+}
+
 .news-container {
     padding: 14px;
 
     h1 {
         text-align: left !important;
         font-size: 2em;
-        font-weight: 600;
+        font-weight: 400;
     }
 
     p {

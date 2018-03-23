@@ -10,10 +10,10 @@ export default Route.extend({
             url: "http://127.0.0.1:8000/home",
             crossDomain: true,
             contentType: "application/json; charset=utf-8",
-            error: function(xhr, err) {
+            /*error: function(xhr, err) {
                 console.debug(xhr);
                 console.debug(err);
-            }
+            }*/
         });
     }
 });

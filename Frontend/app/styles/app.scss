@@ -1,9 +1,23 @@
 // app.scss
 
+@import "home";
+@import "sign-in";
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: inherit;
+}
+
 body {
     margin: 0;
     padding: 0;
 }
+
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
 
 %center-all {
     margin-left: auto;
@@ -34,21 +48,32 @@ body {
     grid-template-rows: auto auto;
     grid-template-columns: 20% 1fr 20%;
 
-    h1 {
+    #main-title {
         font-weight: 200;
         text-align: center;
         grid-column: span 3;
     }
 
-    nav {
+    #home-nav {
         border-top: 1px solid #666;
         border-bottom: 1px solid #666;
         grid-column: span 3;
     }
 
-    .flex-container {
+    .nav-flex-container {
         grid-column: 2/2;
+        display: flex;
+        align-items: center;
+
+        #{$a-tags} {
+            color: black;
+            text-decoration: none;
+            padding: 20px;
+            background: linear-gradient(-90deg, white, #cccccc);
+        }
+
+        #{$a-tags-hover} {
+            background: linear-gradient(-90deg, white, #777777);
+        }
     }
 }
-
-@import "home";

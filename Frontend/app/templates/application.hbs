@@ -6,10 +6,11 @@
   some events to get changes to propagate to this level
 --}}
 <div class='grid-container'>
-  <h1>Anarcho Capitalism is the best system</h1>
-  <nav>
-    <div class='flex-container'>
+  <h1 id='main-title'>Anarcho Capitalism is the best system</h1>
+  <nav id='home-nav'>
+    <div class='nav-flex-container'>
       {{#link-to "index"}}Home{{/link-to}}
+      {{login-display}}
     </div>
   </nav>
   {{outlet}}

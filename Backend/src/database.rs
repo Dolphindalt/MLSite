@@ -5,11 +5,13 @@ use uuid::Uuid;
 use serde::de::Deserialize;
 
 use models::NewsPost;
+use models::User;
 
 const HOSTNAME: &str = "localhost";
 const PORT: u16 = 27017;
 const DB: &str = "test";
 
+pub const USER_COLLECTION: &str = "users";
 pub const NEWS_POST_COLLECTION: &str = "newsposts";
 
 pub struct Database {
@@ -30,6 +32,20 @@ impl Database {
         Database { client: Client::connect(HOSTNAME, PORT)
             .expect("Failed to connect to the mongo database") }
     }
+
+    /// Adds a new user ti the user collection in the mongo database.
+    pub fn add_user(&mut self, user: User) {
+        let collection = self.client.db(DB).collection(USER_COLLECTION);
+
+        let doc = doc! {
+            "username": user.username,
+            "hashword": user.hashword,
+            "date_created": user.date_created,
+        };
+
+        collection.insert_one(doc.clone(), None)
+            .ok().expect("Failed to insert the new user!");
+   }
 
     /// Adds a news posts to the news posts collection in the mongo database.
     pub fn add_news_post(&mut self, news_post: NewsPost) {
@@ -85,17 +101,29 @@ impl Database {
     /// use uuid::Uuid;
     /// 
     /// let database = Database::new();
-    /// let ret = database.find_document::<NewsPost>(NEWS_POST_COLLECTION, Uuid::new_v4());
+    /// let ret = database.find_document_with_uuid::<NewsPost>(NEWS_POST_COLLECTION, Uuid::new_v4());
     /// 
     /// match ret {
     ///     Some(thing) => println!("We found a document!"),
     ///     None => println!("We did not find a document!"),
     /// };
     /// ```
-    pub fn find_document<T>(&self, collection: &str, id: &Uuid) -> Option<T>
+    pub fn find_document_with_uuid<T>(&self, collection: &str, id: &Uuid) -> Option<T>
         where T: Deserialize<'static> {
         let collection = self.client.db(DB).collection(collection);
         let result = collection.find_one(Some(doc!{ "uuid" => id.to_string() }), None);
+
+        if let Some(doc) = result.unwrap() {
+            Some(bson::from_bson::<T>(bson::Bson::Document(doc)).unwrap())
+        } else {
+            None
+        }
+    }
+
+    pub fn find_document_with_username<T>(&self, collection: &str, username: &String) -> Option<T> 
+        where T: Deserialize<'static> {
+        let collection = self.client.db(DB).collection(collection);
+        let result = collection.find_one(Some(doc!{ "username" => username}), None);
 
         if let Some(doc) = result.unwrap() {
             Some(bson::from_bson::<T>(bson::Bson::Document(doc)).unwrap())

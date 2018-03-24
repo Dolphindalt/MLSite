@@ -7,10 +7,13 @@ use database::Database;
 use uuid::Uuid;
 use router::Router;
 use std::error::Error;
-use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders};
+use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
+use iron::method::Method;
 
 use models::NewsPost;
+use models::User;
+use database::USER_COLLECTION;
 use database::NEWS_POST_COLLECTION;
 
 macro_rules! try_handler {
@@ -50,6 +53,7 @@ pub struct Handlers {
     pub news_post_handler: NewsPostHandler,
     pub news_post_feed_handler: NewsPostFeedHandler,
     pub news_post_post_handler: NewsPostPostHandler,
+    pub user_created_handler: UserCreateHandler,
 }
 
 impl Handlers {
@@ -59,6 +63,7 @@ impl Handlers {
             news_post_handler: NewsPostHandler::new(db.clone()),
             news_post_post_handler: NewsPostPostHandler::new(db.clone()),
             news_post_feed_handler: NewsPostFeedHandler::new(db.clone()),
+            user_created_handler: UserCreateHandler::new(db.clone()),
         }
     }
 }
@@ -119,11 +124,39 @@ impl Handler for NewsPostHandler {
         let id = try_handler!(Uuid::parse_str(post_id), status::BadRequest);
 
         let locked = lock!(self.database);
-        if let Some(news_post) = locked.find_document::<NewsPost>(NEWS_POST_COLLECTION, &id) {
+        if let Some(news_post) = locked.find_document_with_uuid::<NewsPost>(NEWS_POST_COLLECTION, &id) {
             let payload = try_handler!(json::encode(&news_post), status::InternalServerError);
             Ok(Response::with((status::Ok, payload)))
         } else {
             Ok(Response::with(status::NotFound))
+        }
+    }
+}
+
+pub struct UserCreateHandler {
+    database: Arc<Mutex<Database>>
+}
+
+impl UserCreateHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> UserCreateHandler {
+        UserCreateHandler { database }
+    }
+}
+
+impl Handler for UserCreateHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+
+        let user: User = try_handler!(json::decode(&payload), status::BadRequest);
+
+        let opt = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &user.username); // do not do this in the if let, or there will be deadlock
+
+        if let Some(_user) = opt {
+            Ok(Response::with((status::Conflict, "That username is already in use!")))
+        } else { // the user was not found, thus the username is available
+            lock!(self.database).add_user(user);
+            Ok(Response::with((status::Created, payload)))
         }
     }
 }
@@ -144,7 +177,13 @@ impl AfterMiddleware for CorsAfterMiddleWare {
         res.headers.set(AccessControlAllowOrigin::Any);
         res.headers.set(AccessControlAllowCredentials);
         res.headers.set(AccessControlAllowHeaders(vec![
-            UniCase("Content-Type".to_owned())
+            UniCase("Content-Type".to_owned()),
+            UniCase("Authorization".to_owned()),
+            UniCase("X-Requested-With".to_owned()),
+        ]));
+        res.headers.set(AccessControlAllowMethods(vec![
+            Method::Get,
+            Method::Post,
         ]));
         Ok(res)
     }

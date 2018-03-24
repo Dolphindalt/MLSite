@@ -6,7 +6,6 @@ extern crate mongodb;
 extern crate uuid;
 extern crate iron;
 extern crate router;
-extern crate chrono;
 extern crate rustc_serialize;
 extern crate serde;
 extern crate unicase;
@@ -33,6 +32,7 @@ fn main() {
     router.get("/home", handlers.news_post_feed_handler, "home");
     router.get("/home_post", handlers.news_post_post_handler, "home_newspost");
     router.get("/home_post/:id", handlers.news_post_handler, "home_newspost_id");
+    router.post("/register", handlers.user_created_handler, "user_created");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

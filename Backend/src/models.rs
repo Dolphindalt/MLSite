@@ -13,3 +13,9 @@ pub struct User {
     pub hashword: String,
     pub date_created: String,
 }
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct LoginRequestData {
+    pub username: String,
+    pub hashword: String,
+}

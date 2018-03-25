@@ -8,11 +8,15 @@ extern crate iron;
 extern crate router;
 extern crate rustc_serialize;
 extern crate serde;
+#[macro_use]
+extern crate serde_json;
 extern crate unicase;
+extern crate crypto;
 
 mod database;
 mod models;
 mod handlers;
+mod keystore;
 
 use database::Database;
 use handlers::*;
@@ -33,6 +37,7 @@ fn main() {
     router.get("/home_post", handlers.news_post_post_handler, "home_newspost");
     router.get("/home_post/:id", handlers.news_post_handler, "home_newspost_id");
     router.post("/register", handlers.user_created_handler, "user_created");
+    router.post("/login", handlers.login_request_handler, "user_login");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

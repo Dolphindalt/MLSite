@@ -8,7 +8,7 @@ export default Component.extend({
     errorMessage: "",
     router: service(),
     actions: {
-        success(msg) {
+        success() {
             this.get('router').transitionTo('sign-in');
         },
         register() {
@@ -19,12 +19,12 @@ export default Component.extend({
                 return;
             }
 
-            if(username.length() < 6) {
+            if(username.length < 6) {
                 this.set('errorMessage', "The username specified must be at least 6 characters");
                 return;
             }
 
-            if(passwd.length() < 6) {
+            if(passwd.length < 6) {
                 this.set('errorMessage', "The password must be at least 6 characters");
                 return;
             }

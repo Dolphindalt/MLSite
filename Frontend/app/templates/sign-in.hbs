@@ -1,14 +1,3 @@
-{{#if session.isAuthenticated}}
-
-{{else}}
-    <form {{action 'authenticate' on='submit'}}>
-        {{input id='identification' placeholder='Username' value=identification}}
-        {{input id='passwd' placeholder='Password' type='password' value=passwd}}
-        <button type="submit">Sign in</button>
-        {{#if errorMessage}}
-            <p>{{errorMessage}}</p>
-        {{/if}}
-    </form>
-{{/if}}
+{{sign-in-form}}
 
 {{outlet}}

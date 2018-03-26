@@ -11,12 +11,11 @@ extern crate serde;
 #[macro_use]
 extern crate serde_json;
 extern crate unicase;
-extern crate crypto;
+extern crate jsonwebtoken as jwt;
 
 mod database;
 mod models;
 mod handlers;
-mod keystore;
 
 use database::Database;
 use handlers::*;

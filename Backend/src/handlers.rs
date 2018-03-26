@@ -4,20 +4,19 @@ use iron::{status, AfterMiddleware, Handler, IronResult, Request, Response};
 use iron::headers::ContentType;
 use rustc_serialize::json;
 use database::Database;
-use keystore::KeyStore;
 use uuid::Uuid;
 use router::Router;
 use std::error::Error;
 use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
 use iron::method::Method;
-use std::time::SystemTime;
-use crypto::sha2::Sha256;
-use crypto::digest::Digest;
+use jwt::{encode, decode, Header, Algorithm, Validation};
 
 use models::*;
 use database::USER_COLLECTION;
 use database::NEWS_POST_COLLECTION;
+
+const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 
 macro_rules! try_handler {
     ($e:expr) => {
@@ -63,13 +62,12 @@ pub struct Handlers {
 impl Handlers {
     pub fn new(database: Database) -> Handlers {
         let db = Arc::new(Mutex::new(database));
-        let keystore = Arc::new(Mutex::new(KeyStore::new()));
         Handlers {
             news_post_handler: NewsPostHandler::new(db.clone()),
             news_post_post_handler: NewsPostPostHandler::new(db.clone()),
             news_post_feed_handler: NewsPostFeedHandler::new(db.clone()),
             user_created_handler: UserCreateHandler::new(db.clone()),
-            login_request_handler: LoginRequestHandler::new(db.clone(), keystore.clone()),
+            login_request_handler: LoginRequestHandler::new(db.clone()),
         }
     }
 }
@@ -169,12 +167,11 @@ impl Handler for UserCreateHandler {
 
 pub struct LoginRequestHandler {
     database: Arc<Mutex<Database>>,
-    keystore: Arc<Mutex<KeyStore>>,
 }
 
 impl LoginRequestHandler {
-    pub fn new(database: Arc<Mutex<Database>>, keystore: Arc<Mutex<KeyStore>>) -> LoginRequestHandler {
-        LoginRequestHandler { database, keystore }
+    pub fn new(database: Arc<Mutex<Database>>) -> LoginRequestHandler {
+        LoginRequestHandler { database }
     }
 }
 
@@ -188,20 +185,11 @@ impl Handler for LoginRequestHandler {
         let opt: Option<User> = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &login_req_data.username);
         
         if let Some(user) = opt {
-            let hashword = login_req_data.hashword;
-            if user.hashword.eq(&hashword) {
-                let junk: String = format!("{:?}{}{}", SystemTime::now(), user.username, user.date_created);
+            let hashword = &login_req_data.hashword;
+            if user.hashword.eq(hashword) {
+                let token = encode(&Header::default(), &login_req_data, SECRET.as_ref()).unwrap();
 
-                let garbage: &str;
-                unsafe {
-                    garbage = junk.slice_unchecked(0, junk.len());
-                }
-
-                let mut hasher = Sha256::new();
-                hasher.input_str(garbage);
-                let hex = hasher.result_str();
-                lock!(self.keystore).add_key(&hex);
-                Ok(Response::with((status::Ok, hex)))
+                Ok(Response::with((status::Ok, token)))
             } else {
                 Ok(Response::with((status::Forbidden, "The password provided was incorrect")))
             }

@@ -189,7 +189,9 @@ impl Handler for LoginRequestHandler {
             if user.hashword.eq(hashword) {
                 let token = encode(&Header::default(), &login_req_data, SECRET.as_ref()).unwrap();
 
-                Ok(Response::with((status::Ok, token)))
+                let data = json!({"token":token});
+
+                Ok(Response::with((status::Ok, data.to_string())))
             } else {
                 Ok(Response::with((status::Forbidden, "The password provided was incorrect")))
             }

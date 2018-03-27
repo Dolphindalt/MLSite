@@ -8,9 +8,17 @@ pub struct NewsPost {
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct PreUser {
+    pub username: String,
+    pub hashword: String,
+    pub date_created: String,
+}
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
 pub struct User {
     pub username: String,
     pub hashword: String,
+    pub admin: bool,
     pub date_created: String,
 }
 
@@ -18,4 +26,10 @@ pub struct User {
 pub struct LoginRequestData {
     pub username: String,
     pub hashword: String,
+}
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct TokenPayload {
+    token: String,
+    body: serde_json::Value,
 }

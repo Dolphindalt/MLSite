@@ -40,6 +40,7 @@ impl Database {
         let doc = doc! {
             "username": user.username,
             "hashword": user.hashword,
+            "admin": user.admin,
             "date_created": user.date_created,
         };
 

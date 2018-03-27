@@ -4,17 +4,15 @@ use iron::{status, AfterMiddleware, Handler, IronResult, Request, Response};
 use iron::headers::ContentType;
 use rustc_serialize::json;
 use database::Database;
-use uuid::Uuid;
-use router::Router;
 use std::error::Error;
 use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
 use iron::method::Method;
 use jwt::{encode, decode, Header, Algorithm, Validation};
 
+use news_post_handlers::*;
 use models::*;
 use database::USER_COLLECTION;
-use database::NEWS_POST_COLLECTION;
 
 const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 
@@ -72,71 +70,6 @@ impl Handlers {
     }
 }
 
-pub struct NewsPostFeedHandler {
-    database: Arc<Mutex<Database>>
-}
-
-impl NewsPostFeedHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> NewsPostFeedHandler {
-        NewsPostFeedHandler { database }
-    }
-}
-
-impl Handler for NewsPostFeedHandler {
-    fn handle(&self, _: &mut Request) -> IronResult<Response> {
-        let payload = try_handler!(json::encode(&lock!(self.database).get_all_documents::<NewsPost>(NEWS_POST_COLLECTION)));
-        Ok(Response::with((status::Ok, payload)))
-    }
-}
-
-pub struct NewsPostPostHandler {
-    database: Arc<Mutex<Database>>
-}
-
-impl NewsPostPostHandler {
-    fn new(database: Arc<Mutex<Database>>) -> NewsPostPostHandler {
-        NewsPostPostHandler { database }
-    }
-}
-
-impl Handler for NewsPostPostHandler {
-    fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let mut payload = String::new();
-        try_handler!(req.body.read_to_string(&mut payload));
-
-        let news_post = try_handler!(json::decode(&payload), status::BadRequest);
-
-        lock!(self.database).add_news_post(news_post);
-        Ok(Response::with((status::Created, payload)))
-    }
-}
-
-pub struct NewsPostHandler {
-    database: Arc<Mutex<Database>>
-}
-
-impl NewsPostHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> NewsPostHandler {
-        NewsPostHandler { database }
-    }
-}
-
-impl Handler for NewsPostHandler {
-    fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let ref post_id = get_http_param!(req, "id");
-
-        let id = try_handler!(Uuid::parse_str(post_id), status::BadRequest);
-
-        let locked = lock!(self.database);
-        if let Some(news_post) = locked.find_document_with_uuid::<NewsPost>(NEWS_POST_COLLECTION, &id) {
-            let payload = try_handler!(json::encode(&news_post), status::InternalServerError);
-            Ok(Response::with((status::Ok, payload)))
-        } else {
-            Ok(Response::with(status::NotFound))
-        }
-    }
-}
-
 pub struct UserCreateHandler {
     database: Arc<Mutex<Database>>
 }
@@ -152,14 +85,20 @@ impl Handler for UserCreateHandler {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
-        let user: User = try_handler!(json::decode(&payload), status::BadRequest);
+        let user: PreUser = try_handler!(json::decode(&payload), status::BadRequest);
 
         let opt = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &user.username); // do not do this in the if let, or there will be deadlock
 
         if let Some(_user) = opt {
             Ok(Response::with((status::Conflict, "That username is already in use")))
         } else { // the user was not found, thus the username is available
-            lock!(self.database).add_user(user);
+            let our_guy = User { 
+                username: user.username,
+                hashword: user.hashword,
+                admin: false,
+                date_created: user.date_created,
+            };
+            lock!(self.database).add_user(our_guy);
             Ok(Response::with((status::Created, payload)))
         }
     }
@@ -182,7 +121,7 @@ impl Handler for LoginRequestHandler {
 
         let login_req_data: LoginRequestData = try_handler!(json::decode(&payload), status::BadRequest);
 
-        let opt: Option<User> = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &login_req_data.username);
+        let opt: Option<PreUser> = lock!(self.database).find_document_with_username::<PreUser>(USER_COLLECTION, &login_req_data.username);
         
         if let Some(user) = opt {
             let hashword = &login_req_data.hashword;

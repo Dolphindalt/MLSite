@@ -19,8 +19,8 @@ export default Component.extend({
                 return;
             }
 
-            if(username.length < 6) {
-                this.set('errorMessage', "The username specified must be at least 6 characters");
+            if(username.length < 4) {
+                this.set('errorMessage', "The username specified must be at least 4 characters");
                 return;
             }
 

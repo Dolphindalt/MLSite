@@ -15,7 +15,9 @@ extern crate jsonwebtoken as jwt;
 
 mod database;
 mod models;
+#[macro_use]
 mod handlers;
+mod news_post_handlers;
 
 use database::Database;
 use handlers::*;

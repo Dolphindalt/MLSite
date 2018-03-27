@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import $ from 'jquery';
 import SHA256 from 'cryptojs/sha256';
 import { inject } from '@ember/service';
 

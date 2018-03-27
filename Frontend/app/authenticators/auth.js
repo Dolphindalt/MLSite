@@ -1,6 +1,7 @@
 import OAuth2PasswordGrantAuthenticator from 'ember-simple-auth/authenticators/oauth2-password-grant';
 import { inject } from '@ember/service';
 import { run } from '@ember/runloop';
+import $ from 'jquery';
 
 export default OAuth2PasswordGrantAuthenticator.extend({
     session: inject('session'),

@@ -17,9 +17,9 @@ export default OAuth2PasswordGrantAuthenticator.extend({
                     "hashword":hashword
                 })
             }).done((response) => {
-                var token = response;
+                var token = JSON.parse(response);
                 run(() => {
-                    
+                    this.get('session').set('data.token', token.token);
                     resolve(token);
                 });
             }).fail((xhr) => {

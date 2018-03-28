@@ -1,9 +1,0 @@
-<form {{action 'submit_post' on='submit'}}>
-    {{textarea id='post_data' value=post_data}}
-    <button type='submit'>Post</button>
-    {{#if errorMessage }}
-        <p class='error'>{{errorMessage}}</p>
-    {{/if}}
-</form>
-
-{{yield}}

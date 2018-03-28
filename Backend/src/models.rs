@@ -1,3 +1,5 @@
+use serde_json::value::Value;
+
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
 pub struct NewsPost {
     pub title: String,
@@ -28,8 +30,8 @@ pub struct LoginRequestData {
     pub hashword: String,
 }
 
-#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TokenPayload {
-    token: String,
-    body: serde_json::Value,
+    pub token: String,
+    pub body: Value,
 }

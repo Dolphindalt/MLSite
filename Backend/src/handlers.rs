@@ -1,20 +1,13 @@
 use std::sync::{Arc, Mutex};
-use std::io::Read;
-use iron::{status, AfterMiddleware, Handler, IronResult, Request, Response};
+use iron::{AfterMiddleware, IronResult, Request, Response};
 use iron::headers::ContentType;
-use rustc_serialize::json;
 use database::Database;
-use std::error::Error;
 use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
 use iron::method::Method;
-use jwt::{encode, decode, Header, Algorithm, Validation};
 
+use login_handlers::*;
 use news_post_handlers::*;
-use models::*;
-use database::USER_COLLECTION;
-
-const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 
 macro_rules! try_handler {
     ($e:expr) => {
@@ -66,76 +59,6 @@ impl Handlers {
             news_post_feed_handler: NewsPostFeedHandler::new(db.clone()),
             user_created_handler: UserCreateHandler::new(db.clone()),
             login_request_handler: LoginRequestHandler::new(db.clone()),
-        }
-    }
-}
-
-pub struct UserCreateHandler {
-    database: Arc<Mutex<Database>>
-}
-
-impl UserCreateHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> UserCreateHandler {
-        UserCreateHandler { database }
-    }
-}
-
-impl Handler for UserCreateHandler {
-    fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let mut payload = String::new();
-        try_handler!(req.body.read_to_string(&mut payload));
-
-        let user: PreUser = try_handler!(json::decode(&payload), status::BadRequest);
-
-        let opt = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &user.username); // do not do this in the if let, or there will be deadlock
-
-        if let Some(_user) = opt {
-            Ok(Response::with((status::Conflict, "That username is already in use")))
-        } else { // the user was not found, thus the username is available
-            let our_guy = User { 
-                username: user.username,
-                hashword: user.hashword,
-                admin: false,
-                date_created: user.date_created,
-            };
-            lock!(self.database).add_user(our_guy);
-            Ok(Response::with((status::Created, payload)))
-        }
-    }
-}
-
-pub struct LoginRequestHandler {
-    database: Arc<Mutex<Database>>,
-}
-
-impl LoginRequestHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> LoginRequestHandler {
-        LoginRequestHandler { database }
-    }
-}
-
-impl Handler for LoginRequestHandler {
-    fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let mut payload = String::new();
-        try_handler!(req.body.read_to_string(&mut payload));
-
-        let login_req_data: LoginRequestData = try_handler!(json::decode(&payload), status::BadRequest);
-
-        let opt: Option<PreUser> = lock!(self.database).find_document_with_username::<PreUser>(USER_COLLECTION, &login_req_data.username);
-        
-        if let Some(user) = opt {
-            let hashword = &login_req_data.hashword;
-            if user.hashword.eq(hashword) {
-                let token = encode(&Header::default(), &login_req_data, SECRET.as_ref()).unwrap();
-
-                let data = json!({"token":token});
-
-                Ok(Response::with((status::Ok, data.to_string())))
-            } else {
-                Ok(Response::with((status::Forbidden, "The password provided was incorrect")))
-            }
-        } else {
-            Ok(Response::with((status::NotFound, "The username provided was invalid")))
         }
     }
 }

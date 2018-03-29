@@ -9,7 +9,6 @@ use std::error::Error;
 use serde_json;
 
 use models::NewsPost;
-use models::TokenPayload;
 use database::NEWS_POST_COLLECTION;
 
 pub struct NewsPostFeedHandler {
@@ -44,8 +43,7 @@ impl Handler for NewsPostPostHandler {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
-        let response_payload: TokenPayload = try_handler!(serde_json::from_str(&payload), status::BadRequest);
-        let news_post: NewsPost = serde_json::from_value::<NewsPost>(response_payload.body).unwrap();
+        let news_post: NewsPost = serde_json::from_str::<NewsPost>(&payload).unwrap(); // fix this later
         
         lock!(self.database).add_news_post(news_post);
         Ok(Response::with((status::Created, payload)))

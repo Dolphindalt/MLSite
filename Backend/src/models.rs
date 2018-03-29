@@ -23,15 +23,3 @@ pub struct User {
     pub admin: bool,
     pub date_created: String,
 }
-
-#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
-pub struct LoginRequestData {
-    pub username: String,
-    pub hashword: String,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TokenPayload {
-    pub token: String,
-    pub body: Value,
-}

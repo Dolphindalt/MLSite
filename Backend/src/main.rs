@@ -17,6 +17,7 @@ mod database;
 mod models;
 #[macro_use]
 mod handlers;
+mod login_handlers;
 mod news_post_handlers;
 
 use database::Database;

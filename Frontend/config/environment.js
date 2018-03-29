@@ -23,6 +23,20 @@ module.exports = function(environment) {
     }
   };
 
+  ENV['ember-simple-auth'] = {
+    authorizer: 'authorizer:jwt'
+  };
+
+  ENV['ember-simple-auth-token'] = {
+    serverTokenEndpoint: 'http://localhost:8000/login',
+    tokenPropertyName: 'token',
+    refreshTokenPropertyName: 'refresh_token',
+    authorizationPrefix: 'Bearer ',
+    authorizationHeaderName: 'Authorization',
+    refreshAccessTokens: true,
+    refreshLeeway: 300
+  };
+
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;

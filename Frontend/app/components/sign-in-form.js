@@ -15,13 +15,12 @@ export default Component.extend({
             var hashword = SHA256(passwd).toString();
             var comp = this;
 
-            var auth = this.get('session').authenticate('authenticator:auth', username, hashword);
+            let data = JSON.parse(JSON.stringify({"identification":username, "password":hashword}));
             
-            auth.then(function(value) {
-                // cookies and remember me maybe?
-                comp.send('success');
-            }, function(reason) {
+            this.get('session').authenticate('authenticator:jwt', data).catch((reason) => {
                 comp.set('errorMessage', reason);
+            }).then(() => {
+                comp.get('router').transitionTo('index');
             });
         }
     }

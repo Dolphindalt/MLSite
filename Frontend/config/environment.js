@@ -24,13 +24,14 @@ module.exports = function(environment) {
   };
 
   ENV['ember-simple-auth'] = {
-    authorizer: 'authorizer:jwt'
+    crossOriginWhitelist: ['*'],
+    authorizer: 'authorizer:token'
   };
 
   ENV['ember-simple-auth-token'] = {
     serverTokenEndpoint: 'http://localhost:8000/login',
-    tokenPropertyName: 'token',
     refreshTokenPropertyName: 'refresh_token',
+    tokenPropertyName: 'token',
     authorizationPrefix: 'Bearer ',
     authorizationHeaderName: 'Authorization',
     refreshAccessTokens: false

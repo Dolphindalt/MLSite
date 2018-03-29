@@ -33,8 +33,7 @@ module.exports = function(environment) {
     refreshTokenPropertyName: 'refresh_token',
     authorizationPrefix: 'Bearer ',
     authorizationHeaderName: 'Authorization',
-    refreshAccessTokens: true,
-    refreshLeeway: 300
+    refreshAccessTokens: false
   };
 
   if (environment === 'development') {

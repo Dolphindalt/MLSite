@@ -6,9 +6,6 @@ export default Component.extend({
     session: inject('session'),
     errorMessage: "",
     actions: {
-        success() {
-            
-        },
         sign_in() {
             let { username, passwd } = this.getProperties('username', 'passwd');
 
@@ -19,9 +16,11 @@ export default Component.extend({
             
             this.get('session').authenticate('authenticator:jwt', data).catch((reason) => {
                 comp.set('errorMessage', reason);
-            }).then(() => {
-                comp.get('router').transitionTo('index');
+                return;
             });
+
+            this.set('errorMessage', '');
+            // route to the home page
         }
     }
 });

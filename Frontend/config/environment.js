@@ -23,20 +23,6 @@ module.exports = function(environment) {
     }
   };
 
-  ENV['ember-simple-auth'] = {
-    crossOriginWhitelist: ['*'],
-    authorizer: 'authorizer:token'
-  };
-
-  ENV['ember-simple-auth-token'] = {
-    serverTokenEndpoint: 'http://localhost:8000/login',
-    refreshTokenPropertyName: 'refresh_token',
-    tokenPropertyName: 'token',
-    authorizationPrefix: 'Bearer ',
-    authorizationHeaderName: 'Authorization',
-    refreshAccessTokens: false
-  };
-
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;

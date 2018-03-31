@@ -10,17 +10,18 @@ export default Component.extend({
             let { username, passwd } = this.getProperties('username', 'passwd');
 
             var hashword = SHA256(passwd).toString();
-            var comp = this;
-
-            let data = JSON.parse(JSON.stringify({"identification":username, "password":hashword}));
-            
-            this.get('session').authenticate('authenticator:jwt', data).catch((reason) => {
-                comp.set('errorMessage', reason);
-                return;
-            });
-
             this.set('errorMessage', '');
-            // route to the home page
+
+            (function(component) {
+                component.get('session').authenticate('authenticator:auth', {
+                    "username":username,
+                    "hashword":hashword
+                }).catch(() => {
+                    // thankyou
+                    component.set('errorMessage', "Incorrect username or password");
+                });
+                // route to the home page
+            }) (this);
         }
     }
 });

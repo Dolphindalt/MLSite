@@ -1,14 +1,19 @@
-import { inject } from '@ember/service';
+import Service from '@ember/service';
 import { run } from '@ember/runloop';
 import $ from 'jquery';
 import { Promise } from 'rsvp';
-import OAuth2PasswordGrantAuthenticator from 'ember-simple-auth/authenticators/oauth2-password-grant';
 
-export default OAuth2PasswordGrantAuthenticator.extend({
-    session: inject('session'),
+export default Service.extend({
+    token: null,
+    isAuthenticated: false,
+    invalidate: function() {
+        this.set('isAuthenticated', false);
+        this.set('token', null);
+    },
     authenticate: function(data) {
+        let comp = this;
         return new Promise(function(resolve, reject) {
-                $.ajax({
+            $.ajax({
                 type: "POST",
                 crossDomain: true,
                 url: 'http://127.0.0.1:8000/login',
@@ -19,6 +24,7 @@ export default OAuth2PasswordGrantAuthenticator.extend({
                 })
             }).done((res) => {
                 run(() => {
+                    comp.set('isAuthenticated', true);
                     resolve({token:res.token});
                 });
             }).fail((xhr) => {

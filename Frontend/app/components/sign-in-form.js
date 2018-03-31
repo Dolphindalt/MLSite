@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 import SHA256 from 'cryptojs/sha256';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
-    session: inject('session'),
+    auth_service: service('auth-service'),
     errorMessage: "",
     actions: {
         sign_in() {
@@ -13,7 +13,7 @@ export default Component.extend({
             this.set('errorMessage', '');
 
             (function(component) {
-                component.get('session').authenticate('authenticator:auth', {
+                component.get('auth_service').authenticate({
                     "username":username,
                     "hashword":hashword
                 }).catch(() => {

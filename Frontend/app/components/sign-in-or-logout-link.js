@@ -1,8 +1,8 @@
 import Component from '@ember/component';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
-    session: inject('session'),
+    session: service('auth-service'),
     tagName:'', // no tag, no ember view :)
     actions: {
         invalidateSession() {

@@ -25,6 +25,16 @@ export default Service.extend({
             }).done((res) => {
                 run(() => {
                     comp.set('isAuthenticated', true);
+                    comp.set('token', res.token);
+                    
+                    $.ajaxPrefilter(function(options) {
+                        if (!options.beforeSend && comp.get('isAuthenticated')) {
+                            options.beforeSend = function(xhr) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + comp.get('token'));
+                            }
+                        }
+                    });
+
                     resolve({token:res.token});
                 });
             }).fail((xhr) => {

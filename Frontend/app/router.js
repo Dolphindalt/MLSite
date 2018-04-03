@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('sign-in');
   this.route('register');
   this.route('create-news-post');
+  this.route('404');
 });
 
 export default Router;

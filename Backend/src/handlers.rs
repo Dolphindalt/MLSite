@@ -1,11 +1,12 @@
 use std::sync::{Arc, Mutex};
-use iron::{AfterMiddleware, IronResult, Request, Response};
+use iron::{status, AfterMiddleware, IronResult, Request, Response, Handler};
 use iron::headers::ContentType;
 use database::Database;
 use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
 use iron::method::Method;
 
+use userdata::extract_token_data_from_header;
 use login_handlers::*;
 use news_post_handlers::*;
 
@@ -43,6 +44,7 @@ macro_rules! get_http_param {
 }
 
 pub struct Handlers {
+    pub admin_handler: AdminHandler,
     pub news_post_handler: NewsPostHandler,
     pub news_post_feed_handler: NewsPostFeedHandler,
     pub news_post_post_handler: NewsPostPostHandler,
@@ -54,11 +56,34 @@ impl Handlers {
     pub fn new(database: Database) -> Handlers {
         let db = Arc::new(Mutex::new(database));
         Handlers {
+            admin_handler: AdminHandler::new(),
             news_post_handler: NewsPostHandler::new(db.clone()),
             news_post_post_handler: NewsPostPostHandler::new(db.clone()),
             news_post_feed_handler: NewsPostFeedHandler::new(db.clone()),
             user_created_handler: UserCreateHandler::new(db.clone()),
             login_request_handler: LoginRequestHandler::new(db.clone()),
+        }
+    }
+}
+
+pub struct AdminHandler;
+
+impl AdminHandler {
+    fn new() -> AdminHandler {
+        AdminHandler { }
+    }
+}
+
+impl Handler for AdminHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        if let Some(data) = extract_token_data_from_header(req) {
+            if data.admin == true {
+                Ok(Response::with(status::Ok))
+            } else {
+                Ok(Response::with(status::Forbidden))
+            }
+        } else {
+            Ok(Response::with(status::Forbidden))
         }
     }
 }

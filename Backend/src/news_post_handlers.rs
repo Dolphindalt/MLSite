@@ -9,6 +9,7 @@ use std::error::Error;
 use serde_json;
 
 use models::NewsPost;
+use userdata::extract_token_data_from_header;
 use database::NEWS_POST_COLLECTION;
 
 pub struct NewsPostFeedHandler {

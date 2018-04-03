@@ -19,6 +19,7 @@ mod models;
 mod handlers;
 mod login_handlers;
 mod news_post_handlers;
+mod userdata;
 
 use database::Database;
 use handlers::*;
@@ -35,9 +36,12 @@ fn main() {
     let cors_after_middleware = CorsAfterMiddleWare;
 
     let mut router = Router::new();
+    router.get("/admin", handlers.admin_handler, "admin");
+
     router.get("/home", handlers.news_post_feed_handler, "home");
-    router.get("/home_post", handlers.news_post_post_handler, "home_newspost");
+    router.post("/home_post", handlers.news_post_post_handler, "home_newspost");
     router.get("/home_post/:id", handlers.news_post_handler, "home_newspost_id");
+
     router.post("/register", handlers.user_created_handler, "user_created");
     router.post("/login", handlers.login_request_handler, "user_login");
 

@@ -12,7 +12,7 @@ use models::User;
 use models::PreUser;
 use database::USER_COLLECTION;
 
-const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
+pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 
 pub struct UserCreateHandler {
     database: Arc<Mutex<Database>>

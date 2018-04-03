@@ -30,7 +30,7 @@ export default Service.extend({
                     $.ajaxPrefilter(function(options) {
                         if (!options.beforeSend && comp.get('isAuthenticated')) {
                             options.beforeSend = function(xhr) {
-                                xhr.setRequestHeader('Authorization', 'Bearer ' + comp.get('token'));
+                                xhr.setRequestHeader('Authorization', comp.get('token'));
                             }
                         }
                     });

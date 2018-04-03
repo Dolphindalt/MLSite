@@ -9,8 +9,11 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('sign-in');
   this.route('register');
-  this.route('create-news-post');
   this.route('404');
+
+  this.route('home', function() {
+    this.route('create-post');
+  });
 });
 
 export default Router;

@@ -16,7 +16,7 @@ export default Route.extend({
             contentType: "aplication/json; charset=utf-8",
             url: "http://localhost:8000/home_newspost",
             data: JSON.stringify({
-                "username":username,
+                "username":"Bongo",
                 "body":html_data,
                 "datetime":this.get('currentDate').getDate(),
                 "uuid":v4()

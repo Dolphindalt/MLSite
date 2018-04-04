@@ -39,7 +39,7 @@ fn main() {
     router.get("/admin", handlers.admin_handler, "admin");
 
     router.get("/home", handlers.news_post_feed_handler, "home");
-    router.post("/home_post", handlers.news_post_post_handler, "home_newspost");
+    router.post("/news-post-models", handlers.news_post_post_handler, "home_newspost");
     router.get("/home_post/:id", handlers.news_post_handler, "home_newspost_id");
 
     router.post("/register", handlers.user_created_handler, "user_created");

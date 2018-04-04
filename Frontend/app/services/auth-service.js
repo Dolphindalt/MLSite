@@ -5,10 +5,12 @@ import { Promise } from 'rsvp';
 
 export default Service.extend({
     token: null,
+    username: "",
     isAuthenticated: false,
     invalidate: function() {
         this.set('isAuthenticated', false);
         this.set('token', null);
+        this.set('username', '');
     },
     authenticate: function(data) {
         let comp = this;
@@ -24,6 +26,7 @@ export default Service.extend({
                 })
             }).done((res) => {
                 run(() => {
+                    comp.set('username', data.username);
                     comp.set('isAuthenticated', true);
                     comp.set('token', res.token);
                     

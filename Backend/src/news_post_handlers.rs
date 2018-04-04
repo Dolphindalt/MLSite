@@ -7,6 +7,7 @@ use uuid::Uuid;
 use router::Router;
 use std::error::Error;
 use serde_json;
+use serde_json::Value;
 
 use models::NewsPost;
 use userdata::extract_token_data_from_header;
@@ -44,7 +45,11 @@ impl Handler for NewsPostPostHandler {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
-        let news_post: NewsPost = serde_json::from_str::<NewsPost>(&payload).unwrap(); // fix this later
+        // TODO: Seperate this into a seperate function to extract ember data
+        let data: Value = try_handler!(serde_json::from_str(&payload));
+        let attribs: &Value = &data.get("data").unwrap().get("attributes").unwrap();
+
+        let news_post: NewsPost = serde_json::from_str::<NewsPost>(&attribs.to_string()).unwrap(); // fix this later
         
         lock!(self.database).add_news_post(news_post);
         Ok(Response::with((status::Created, payload)))

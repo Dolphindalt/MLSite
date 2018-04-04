@@ -6,12 +6,15 @@
   some events to get changes to propagate to this level
 --}}
 <div class='grid-container'>
-  <h1 id='main-title'>Anarcho Capitalism is the best system</h1>
   <nav id='home-nav'>
     <div class='nav-flex-container'>
-      {{#link-to "index"}}Home{{/link-to}}
-      {{sign-in-or-logout-link}}
-      {{#link-to "home.create-post"}}CreatePost{{/link-to}}
+      <ul>
+        {{#link-to "home.create-post"}}CreatePost{{/link-to}}
+      </ul>
+      {{#link-to "index"}}<span><strong>Medieval</strong> Lords</span>{{/link-to}}
+      <ul>
+        {{sign-in-or-logout-link}}
+      </ul>
     </div>
   </nav>
   {{outlet}}

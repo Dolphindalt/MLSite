@@ -3,17 +3,12 @@ import $ from 'jquery';
 
 export default Route.extend({
     model() {
-        //return $.getJSON("https://www.reddit.com/r/anime/.json");
         return $.ajax({
             type: "GET",
             dataType: 'json',
-            url: "http://127.0.0.1:8000/home",
+            url: "http://127.0.0.1:8000/news-post-models",
             crossDomain: true,
-            contentType: "application/json; charset=utf-8",
-            /*error: function(xhr, err) {
-                console.debug(xhr);
-                console.debug(err);
-            }*/
+            contentType: "application/json; charset=utf-8"
         });
     }
 });

@@ -16,18 +16,15 @@ export default Route.extend({
     },
     actions: {
         post_news() {
-            console.debug("K");
             let new_post = this.modelFor('home.create-post');
             new_post.set('author', this.get('session').get('username'));
             new_post.set('datetime', this.get('date').getDate());
             new_post.set('uuid', v4());
             let route = this;
             new_post.save().then(function() {
-                console.debug("WRRRYYY");
                 route.transitionTo('index');
             }).catch(function(reason) {
                 route.set('errorMessage', reason);
-                console.debug("Errr");
             });
         }
     }

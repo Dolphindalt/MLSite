@@ -1,56 +1,83 @@
 import Component from '@ember/component';
 import $ from 'jquery';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
+    math: service('math'),
     classNames: ['home-canvas'],
     tagName: 'canvas',
     width: 600,
     height: 400,
+    particles: [],
+    particlesNum: 50,
+    colors: ["#c1cbff", "#4f5263", "#515151"],
     attributeBindings: ['width', 'height'],
-    mycanvas: '',
-    triangleData: [ 
-        [100, 100, 30, 10],
-
-    ],
+    mycanvas: undefined,
+    ctx: undefined,
     didRender() {
         this.set('mycanvas', Ember.$("canvas")[0]);
-        this.send('rain');
-
-        for(let i = 0; i < 30; i++) {
-            let data = [
-                Math.random() * this.get('width') + 1,
-                Math.random() * this.get('height') + 1,
-                Math.random() * (50 - 30) + 30,
-                Math.random() * 10 + 1,
-            ];
-            this.get('triangleData').push(data);
+        this.set('ctx', this.get('mycanvas').getContext("2d"));
+        
+        for(let i = 0; i < this.get('particlesNum'); i++) {
+            this.get('particles').push(this.makeParticle());
         }
+
+        this.send('activateParticles');
     },
-    drawTriangle(ctx, x, y, r) {
-        ctx.moveTo(x, y + r);
-        let v1 = 210 * Math.PI / 180;
-        ctx.lineTo((x + r * Math.cos(v1)), y + r * Math.sin(v1));
-        let v2 = 330 * Math.PI / 180;
-        ctx.lineTo(x + r * Math.cos(v2), y + r * Math.sin(v2));
-        ctx.lineTo(x, y + r);
-        ctx.stroke();
-        ctx.fillStyle = "#000";
-        ctx.fill();
-    },
-    actions: {
-        rain() {
-            let stuff = () => {
-                let ctx = this.get('mycanvas').getContext("2d");
-                ctx.clearRect(0, 0, this.get('width'), this.get('height'));
-                ctx.beginPath();
-                for(let b = this.get('triangleData').length-1; b >= 0; b--) {
-                    let data = this.get('triangleData')[b];
-                    this.drawTriangle(ctx, data[0], data[1], data[2]);
-                    data[0] += data[3];
-                    if(data[0] >= this.get('width') + data[2]) data[0] = 0;
+    draw() {
+        let ctx = this.get('ctx');
+        ctx.clearRect(0, 0, this.get('width'), this.get('height'));
+        for(let i = 0; i < this.get('particlesNum'); i++) {
+            let temp = this.get('particles')[i];
+            let factor = 1;
+            for(let j = 0; j < this.get('particlesNum'); j++) {
+                let temp2 = this.get('particles')[j];
+                ctx.linewidth = 0.5;
+
+                if(temp.rgba == temp2.rgba && this.get('math').distance(temp, temp2) < 50) {
+                    ctx.strokeStyle = temp.rgba;
+                    ctx.beginPath();
+                    ctx.moveTo(temp.x, temp.y);
+                    ctx.lineTo(temp2.x, temp2.y);
+                    ctx.stroke();
+                    factor++;
                 }
             }
-            setInterval(stuff, 50);
+
+            ctx.fillStyle = temp.rgba;
+            ctx.strokeStyle = temp.rgba;
+
+            ctx.beginPath();
+            ctx.arc(temp.x, temp.y, temp.rad*factor, 0, Math.PI*2, true);
+            ctx.fill();
+            ctx.closePath();
+
+            temp.x += temp.vx;
+            temp.y += temp.vy;
+
+            if(temp.x > this.get('width'))temp.x = 0;
+            if(temp.x < 0)temp.x = this.get('width');
+            if(temp.y > this.get('height'))temp.y = 0;
+            if(temp.y < 0)temp.y = this.get('height'); 
+        }
+    },
+    makeParticle() {
+        var g = {
+            "x": Math.round( Math.random() * this.get('width')),
+            "y": Math.round( Math.random() * this.get('height')),
+            "rad": Math.round( Math.random() * 1) + 1,
+            "rgba": this.get('colors')[ Math.round( Math.random() * this.get('colors').length) ],
+            "vx": Math.round( Math.random() * 3) - 1.5,
+            "vy": Math.round( Math.random() * 3) - 1.5
+        };
+        return g;
+    },
+    actions: {
+        activateParticles() {
+            let stuff = () => {
+                this.draw();
+            }
+            setInterval(stuff, 60);
         }
     }
 });

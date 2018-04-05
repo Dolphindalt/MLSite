@@ -24,6 +24,10 @@
             height: 300px;
             width: 300px;
         }
+
+        .home-canvas {
+            @extend %home-header-dimension;
+        }
     }
     
 }

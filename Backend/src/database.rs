@@ -88,6 +88,7 @@ impl Database {
                 bson::from_bson::<T>(bson::Bson::Document(d)).unwrap()
             );
         };
+        docs.reverse();
         docs
     }
 

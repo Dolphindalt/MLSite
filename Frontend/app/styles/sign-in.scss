@@ -1,0 +1,42 @@
+// sign-in.scss
+
+.sign-in-form {
+    form {
+        margin-top: 20%;
+    }
+
+    %login-input {
+        padding: 6px 25px;
+        margin: 4px 2px;
+        border: none;
+        border-bottom: 2px solid #4b65b8;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+
+    #username {
+        @extend %login-input;
+    }
+
+    #passwd {
+        @extend %login-input;
+    }
+
+    .button-wrapper {
+        margin: 20px;
+    }
+
+    #button {
+        display: inline;
+        background-color: #4b65b8;
+        border-radius: 10%;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+}

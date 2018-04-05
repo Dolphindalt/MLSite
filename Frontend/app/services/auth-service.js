@@ -4,12 +4,12 @@ import $ from 'jquery';
 import { Promise } from 'rsvp';
 
 export default Service.extend({
-    token: null,
+    token: "",
     username: "",
     isAuthenticated: false,
     invalidate: function() {
         this.set('isAuthenticated', false);
-        this.set('token', null);
+        this.set('token', '');
         this.set('username', '');
     },
     authenticate: function(data) {

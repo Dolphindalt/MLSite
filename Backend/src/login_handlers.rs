@@ -65,8 +65,19 @@ impl Handler for LoginRequestHandler {
 
         let login_req_data: Value = try_handler!(serde_json::from_str(&payload), status::BadRequest);
 
-        let username = String::from(login_req_data["username"].as_str().unwrap());
-        let hashword = String::from(login_req_data["password"].as_str().unwrap());
+        let username: String;
+        if let Some(shaky_username) = login_req_data["username"].as_str() {
+            username = String::from(shaky_username);
+        } else {
+            return Ok(Response::with((status::BadRequest)));
+        };
+
+        let hashword: String;
+        if let Some(shaky_hashword) = login_req_data["password"].as_str() {
+            hashword = String::from(shaky_hashword);
+        } else {
+            return Ok(Response::with((status::BadRequest)));
+        }
 
         let opt: Option<User> = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &username);
         
@@ -78,10 +89,10 @@ impl Handler for LoginRequestHandler {
 
                 Ok(Response::with((status::Ok, token_str)))
             } else {
-                Ok(Response::with((status::Forbidden, "The password provided was incorrect")))
+                Ok(Response::with((status::Forbidden)))
             }
         } else {
-            Ok(Response::with((status::NotFound, "The username provided was invalid")))
+            Ok(Response::with((status::NotFound)))
         }
     }
 }

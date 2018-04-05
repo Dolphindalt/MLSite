@@ -39,6 +39,10 @@ $a-tags-hover: 'a:active, a:hover';
     flex-direction: column;
 }
 
+.error {
+    font-family: Helvetica, sans-serif;
+}
+
 .flex-container {
     @extend %vertical-flex;
 }
@@ -75,11 +79,16 @@ $a-tags-hover: 'a:active, a:hover';
         #{$a-tags} {
             color: rgba(44, 44, 44, 0.8);
             text-decoration: none;
-            padding: 20px;
         }
 
         #{$a-tags-hover} {
             color: black;
         }
     }
+}
+
+.main-centered-container {
+    grid-column: 2/2;
+    width: 100%;
+    @extend %center-all;
 }

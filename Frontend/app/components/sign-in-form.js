@@ -3,6 +3,7 @@ import SHA256 from 'cryptojs/sha256';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
+    classNames: ['sign-in-form'],
     auth_service: service('auth-service'),
     errorMessage: "",
     actions: {

@@ -9,6 +9,7 @@
 
 html {
     box-sizing: inherit;
+    background-color: #f8f8f8;
 }
 
 body {
@@ -50,7 +51,7 @@ $a-tags-hover: 'a:active, a:hover';
 .grid-container {
     display: grid;
     grid-template-rows: auto auto;
-    grid-template-columns: 20% 1fr 20%;
+    grid-template-columns: 10% 1fr 10%;
 
     #main-title {
         font-weight: 200;

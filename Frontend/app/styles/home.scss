@@ -1,5 +1,33 @@
 // home.scss
 
+%home-header-dimension {
+    width: 100%;
+    height: 300px;
+}
+
+.home-header {
+    grid-column: 2/2;
+    grid-column-end: auto;
+    grid-column-start: span 3;
+    @extend %home-header-dimension;
+    @extend %center-all;
+
+    .home-header-wrapper {
+        position: absolute;
+        @extend %home-header-dimension;
+
+        .home-image {
+            @extend %home-header-dimension;
+        }
+
+        .home-logo {
+            height: 300px;
+            width: 300px;
+        }
+    }
+    
+}
+
 .news-flex-container {
     grid-column: 2/2;
 }

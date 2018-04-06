@@ -1,5 +1,7 @@
 // home.scss
 
+@import "news-post";
+
 %home-header-dimension {
     width: 100%;
     height: 300px;
@@ -29,27 +31,23 @@
             @extend %home-header-dimension;
         }
     }
-    
 }
 
 .news-flex-container {
     grid-column: 2/2;
 }
 
-.news-container {
-    padding: 14px;
+#news-header-padding {
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
 
-    h1 {
-        text-align: left !important;
-        font-size: 2em;
-        font-weight: 400;
-    }
+#news-left {
+    float: left;
+    width: 68%;
+}
 
-    p {
-        font-size: 1.2em;
-    }
-
-    small {
-        font-size: 1em;
-    }
+#news-right {
+    float: right;
+    width: 30%;
 }

@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import $ from 'jquery';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
@@ -7,10 +6,10 @@ export default Component.extend({
     classNames: ['home-canvas'],
     tagName: 'canvas',
     width: 600,
-    height: 400,
+    height: 300,
     particles: [],
-    particlesNum: 75,
-    colors: ["#c1cbff", "#b5b1bf", "#8e1212", "#560000"],
+    particlesNum: 70,
+    colors: ["#111111", "#6d0000"],
     attributeBindings: ['width', 'height'],
     mycanvas: undefined,
     ctx: undefined,
@@ -34,13 +33,14 @@ export default Component.extend({
                 let temp2 = this.get('particles')[j];
                 ctx.linewidth = 0.5;
 
-                if(temp.rgba == temp2.rgba && this.get('math').distance(temp, temp2) < 50) {
-                    ctx.strokeStyle = "#777777";
+                let distance = this.get('math').distance(temp, temp2);
+                if(temp.rgba == temp2.rgba && distance < 50) {
+                    ctx.strokeStyle = "#464646" + parseInt(Math.round(distance), 16);
                     ctx.beginPath();
                     ctx.moveTo(temp.x, temp.y);
                     ctx.lineTo(temp2.x, temp2.y);
                     ctx.stroke();
-                    factor += 0.5;
+                    factor += 0.1;
                 }
             }
 
@@ -66,9 +66,9 @@ export default Component.extend({
             "x": Math.round( Math.random() * this.get('width')),
             "y": Math.round( Math.random() * this.get('height')),
             "rad": Math.round( Math.random() * 1) + 1,
-            "rgba": this.get('colors')[ Math.round( Math.random() * this.get('colors').length) ],
-            "vx": Math.round( Math.random() * 3) - 1.5,
-            "vy": Math.round( Math.random() * 3) - 1.5
+            "rgba": this.get('colors')[ Math.round( Math.random() * (this.get('colors').length - 1)) ],
+            "vx": Math.round( Math.random() * 2) - 1.5,
+            "vy": Math.round( Math.random() * 2) - 1.5
         };
         return g;
     },

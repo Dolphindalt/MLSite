@@ -1,5 +1,8 @@
-<h1>{{data.title}}</h1>
-<p>{{data.body}}</p>
-<small>By {{data.author}}<br>Posted {{data.datetime}}</small>
+<div class='news-content-wrapper'>
+    <div class='news-header'>{{data.title}}</div>
+    <div class='news-info'>Posted by {{data.author}} on {{data.datetime}}</div>
+    <div class='news-content'>{{data.body}}</div>
+</div>
+<button class='news-view-full-button'>View Full</button>
 
 {{yield}}

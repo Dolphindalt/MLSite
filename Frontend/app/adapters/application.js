@@ -7,7 +7,7 @@ export default DS.JSONAPIAdapter.extend({
     host: 'http://localhost:8000',
     headers: computed('session.token', function() {
         return {
-            'Authoriztion': this.get('session.token')
+            'Authorization': this.get('session.token')
         };
     })
 });

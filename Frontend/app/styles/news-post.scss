@@ -1,0 +1,48 @@
+// news-post.scss
+
+.news-container {
+    padding: 14px;
+    font-family: Helvetica;
+    height: 182px;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    margin-top: 12px;
+
+    .news-content-wrapper {
+        max-height: 150px;
+
+        .news-header {
+            text-align: left !important;
+            font-size: 1.3em;
+            font-weight: 400;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .news-content {
+            font-size: 1em;
+            overflow-y: hidden;
+            height: 65px;
+            text-overflow: ellipsis;
+            mask-image: linear-gradient(rgb(0,0,0) 0%, rgba(0,0,0,0) 100%);
+            margin-bottom: 10px;
+        }
+
+        .news-info {
+            font-size: 1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+    }
+
+    .news-view-full-button {
+        border-radius: 12px;
+        padding: 6px 25px;
+        margin: 8px 24px;
+        background-color: #4b65b8; 
+        color: white;
+        text-transform: uppercase;
+        border: none;
+    }
+}

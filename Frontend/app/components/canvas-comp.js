@@ -9,8 +9,8 @@ export default Component.extend({
     width: 600,
     height: 400,
     particles: [],
-    particlesNum: 50,
-    colors: ["#c1cbff", "#4f5263", "#515151"],
+    particlesNum: 75,
+    colors: ["#c1cbff", "#b5b1bf", "#8e1212", "#560000"],
     attributeBindings: ['width', 'height'],
     mycanvas: undefined,
     ctx: undefined,
@@ -35,12 +35,12 @@ export default Component.extend({
                 ctx.linewidth = 0.5;
 
                 if(temp.rgba == temp2.rgba && this.get('math').distance(temp, temp2) < 50) {
-                    ctx.strokeStyle = temp.rgba;
+                    ctx.strokeStyle = "#777777";
                     ctx.beginPath();
                     ctx.moveTo(temp.x, temp.y);
                     ctx.lineTo(temp2.x, temp2.y);
                     ctx.stroke();
-                    factor++;
+                    factor += 0.5;
                 }
             }
 

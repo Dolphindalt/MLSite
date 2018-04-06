@@ -5,6 +5,8 @@ export default Component.extend({
     actions: {
         toPost() {
             // todo: set up single post view model
+            console.debug("Boi");
+            this.get('router').transitionTo("home.view-news/" + this.get('data.uuid'));
         }
     }
 });

@@ -12,6 +12,7 @@ Router.map(function() {
 
   this.route('home', function() {
     this.route('create-post');
+    this.route('view-news', { path: "/view-news/:uuid" });
   });
   this.route('error');
 });

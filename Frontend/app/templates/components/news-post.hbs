@@ -3,6 +3,7 @@
     <div class='news-info'>Posted by {{data.author}} on {{data.datetime}}</div>
     <div class='news-content'>{{data.body}}</div>
 </div>
-<button class='news-view-full-button' {{action "toPost"}}>View Full</button>
+
+{{#link-to "home.view-news" data.uuid}}<button class='news-view-full-button'>View Full</button>{{/link-to}}
 
 {{yield}}

@@ -1,9 +1,21 @@
 // sign-in.scss
 
+#sign-in-paper {
+    overflow: hidden;
+    display: none;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 150;
+}
+
 .sign-in-form {
-    form {
-        margin-top: 20%;
-    }
+    background-color: #efefef;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    margin-top: 20%;
 
     %login-input {
         padding: 6px 25px;
@@ -29,7 +41,6 @@
     }
 
     #button {
-        display: inline;
         background-color: #4b65b8;
         border-radius: 12px;
         color: white;

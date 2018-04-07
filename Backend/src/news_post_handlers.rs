@@ -76,14 +76,7 @@ impl Handler for NewsPostHandler {
         if let Some(news_post) = locked.find_document_with_uuid::<NewsPost>(NEWS_POST_COLLECTION, &id) {
             let payload = try_handler!(json::encode(&news_post), status::InternalServerError);
 
-            let data = json!({
-                "data": {
-                    "attributes": payload,
-                    "type": "news-post-models"
-                }
-            });
-
-            Ok(Response::with((status::Ok, data.to_string())))
+            Ok(Response::with((status::Ok, payload)))
         } else {
             Ok(Response::with(status::NotFound))
         }

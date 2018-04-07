@@ -69,14 +69,14 @@ impl Handler for LoginRequestHandler {
         if let Some(shaky_username) = login_req_data["username"].as_str() {
             username = String::from(shaky_username);
         } else {
-            return Ok(Response::with((status::BadRequest)));
+            return Ok(Response::with(status::BadRequest));
         };
 
         let hashword: String;
         if let Some(shaky_hashword) = login_req_data["password"].as_str() {
             hashword = String::from(shaky_hashword);
         } else {
-            return Ok(Response::with((status::BadRequest)));
+            return Ok(Response::with(status::BadRequest));
         }
 
         let opt: Option<User> = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &username);
@@ -89,10 +89,10 @@ impl Handler for LoginRequestHandler {
 
                 Ok(Response::with((status::Ok, token_str)))
             } else {
-                Ok(Response::with((status::Forbidden)))
+                Ok(Response::with(status::Forbidden))
             }
         } else {
-            Ok(Response::with((status::NotFound)))
+            Ok(Response::with(status::NotFound))
         }
     }
 }

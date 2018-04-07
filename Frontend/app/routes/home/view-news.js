@@ -2,6 +2,10 @@ import Route from '@ember/routing/route';
 
 export default Route.extend({
     model(params) {
-        return this.store.findRecord('news-post-model', params.uuid);
+        this.store.queryRecord('news-post-model', { uuid: params.uuid }).then((res) =>{
+            return res;
+        }).catch((shit) => {
+            console.debug(shit);
+        });
     }
 });

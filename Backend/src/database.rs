@@ -33,7 +33,7 @@ impl Database {
             .expect("Failed to connect to the mongo database") }
     }
 
-    /// Adds a new user ti the user collection in the mongo database.
+    /// Adds a new user to the user collection in the mongo database.
     pub fn add_user(&mut self, user: User) {
         let collection = self.client.db(DB).collection(USER_COLLECTION);
 

@@ -1,0 +1,28 @@
+// forum-post.scss
+
+.forums-post-wrapper {
+    width: 100%;
+    margin-top: 12px;
+    border: 1px solid #dddddd;
+
+    .forum-post-title {
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid #dddddd;
+        background-color: #efefef;
+        font-size: 24px;
+    }
+
+    .forum-post-content-wrapper {
+        margin: 10px;
+    
+        .forum-post-body {
+            line-height: 23px;
+        }
+
+        .forum-post-data {
+            font-size: 14px;
+            margin: 10px 0px;
+        }
+    }
+}

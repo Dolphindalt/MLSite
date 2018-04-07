@@ -2,6 +2,7 @@
 
 @import "home";
 @import "sign-in";
+@import "forum-post.scss";
 
 *, *:before, *:after {
     box-sizing: inherit;
@@ -61,7 +62,7 @@ $a-tags-hover: 'a:active, a:hover';
     }
 
     #home-nav {
-        border-bottom: 2px solid #555;
+        border-bottom: 1px solid #555;
         grid-column: span 3;
     }
 

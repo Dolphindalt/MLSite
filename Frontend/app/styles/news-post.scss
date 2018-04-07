@@ -1,5 +1,8 @@
 // news-post.scss
 
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
+
 .news-container {
     padding: 14px;
     font-family: Helvetica;
@@ -36,13 +39,19 @@
 
     }
 
-    .news-view-full-button {
+    #{$a-tags} {
         border-radius: 12px;
         padding: 6px 25px;
-        margin: 8px 24px;
+        margin: 2px 24px;
         background-color: #4b65b8; 
         color: white;
         text-transform: uppercase;
         border: none;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    #{$a-tags-hover} {
+        background-color: #6175b6; 
     }
 }

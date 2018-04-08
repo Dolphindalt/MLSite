@@ -3,13 +3,13 @@ import { v4 } from 'ember-uuid';
 import { inject as service } from '@ember/service';
 
 export default Route.extend({
-    session: service('auth-service'),
-    currentDate: service('current-date'),
-    admin: service('admin-priv'),
     date: service('current-date'),
+    session: service('auth-service'),
     errorMessage: "",
     beforeModel() {
-        this.get('admin').adminRoute(this);
+        if(!this.get('session').get('admin')) {
+            this.transitionTo('index');
+        }
     },
     model() {
         return this.store.createRecord('news-post-model');

@@ -78,7 +78,7 @@ impl Handler for AdminHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         if let Some(data) = extract_token_data_from_header(req) {
             if data.admin == true {
-                Ok(Response::with(status::Ok))
+                Ok(Response::with((status::Ok, "{}")))
             } else {
                 Ok(Response::with(status::Forbidden))
             }

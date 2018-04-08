@@ -7,6 +7,7 @@ use std::error::Error;
 use jwt::{encode, Header};
 use serde_json;
 use serde_json::Value;
+use router::Router;
 
 use models::User;
 use models::PreUser;
@@ -91,6 +92,30 @@ impl Handler for LoginRequestHandler {
             } else {
                 Ok(Response::with(status::Forbidden))
             }
+        } else {
+            Ok(Response::with(status::NotFound))
+        }
+    }
+}
+
+pub struct GetSingleUserHandler {
+    database: Arc<Mutex<Database>>
+}
+
+impl GetSingleUserHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetSingleUserHandler {
+        GetSingleUserHandler { database }
+    }
+}
+
+impl Handler for GetSingleUserHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let ref username = get_http_param!(req, "username");
+
+        let locked = lock!(self.database);
+        if let Some(userdata) = locked.find_document_with_username::<User>(USER_COLLECTION, &username) {
+            let payload = try_handler!(json::encode(&userdata), status::InternalServerError);
+            Ok(Response::with((status::Ok, payload)))
         } else {
             Ok(Response::with(status::NotFound))
         }

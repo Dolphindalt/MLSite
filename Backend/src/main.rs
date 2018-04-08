@@ -17,7 +17,7 @@ mod database;
 mod models;
 #[macro_use]
 mod handlers;
-mod login_handlers;
+mod user_handlers;
 mod news_post_handlers;
 mod userdata;
 
@@ -44,6 +44,8 @@ fn main() {
 
     router.post("/register", handlers.user_created_handler, "user_created");
     router.post("/login", handlers.login_request_handler, "user_login");
+
+    router.get("/user/:username", handlers.user_get_single_handler, "user_get_single");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

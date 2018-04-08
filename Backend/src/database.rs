@@ -122,7 +122,7 @@ impl Database {
         }
     }
 
-    pub fn find_document_with_username<T>(&self, collection: &str, username: &String) -> Option<T> 
+    pub fn find_document_with_username<T>(&self, collection: &str, username: &str) -> Option<T> 
         where T: Deserialize<'static> {
         let collection = self.client.db(DB).collection(collection);
         let result = collection.find_one(Some(doc!{ "username" => username}), None);

@@ -3,7 +3,7 @@ use iron::{Request};
 use jwt::{decode, Validation};
 
 use models::User;
-use login_handlers::SECRET;
+use user_handlers::SECRET;
 
 pub fn extract_token_data_from_header(req: &mut Request) -> Option<User> {
     if let Some(auth_token) = req.headers.get_raw("Authorization") {

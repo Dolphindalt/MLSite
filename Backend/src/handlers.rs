@@ -5,9 +5,8 @@ use database::Database;
 use iron::headers::{AccessControlAllowOrigin, AccessControlAllowCredentials, AccessControlAllowHeaders, AccessControlAllowMethods};
 use unicase::UniCase;
 use iron::method::Method;
-
 use userdata::extract_token_data_from_header;
-use login_handlers::*;
+use user_handlers::*;
 use news_post_handlers::*;
 
 macro_rules! try_handler {
@@ -50,6 +49,7 @@ pub struct Handlers {
     pub news_post_post_handler: NewsPostPostHandler,
     pub user_created_handler: UserCreateHandler,
     pub login_request_handler: LoginRequestHandler,
+    pub user_get_single_handler: GetSingleUserHandler,
 }
 
 impl Handlers {
@@ -62,6 +62,7 @@ impl Handlers {
             news_post_feed_handler: NewsPostFeedHandler::new(db.clone()),
             user_created_handler: UserCreateHandler::new(db.clone()),
             login_request_handler: LoginRequestHandler::new(db.clone()),
+            user_get_single_handler: GetSingleUserHandler::new(db.clone()),
         }
     }
 }

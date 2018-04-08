@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import SHA256 from 'cryptojs/sha256';
 import { inject as service } from '@ember/service';
+import $ from 'jquery';
 
 export default Component.extend({
     classNames: ['sign-in-form'],
@@ -24,6 +25,10 @@ export default Component.extend({
                 });
                 // route to the home page
             }) (this);
+        },
+        hideLogin() {
+            this.set('errorMessage', "");
+            $('#sign-in-paper').hide();
         }
     }
 });

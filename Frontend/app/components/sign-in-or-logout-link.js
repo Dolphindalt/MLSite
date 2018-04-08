@@ -10,10 +10,7 @@ export default Component.extend({
             this.get('session').invalidate();
         },
         renderLogin() {
-            $('#sign-in-paper').show("slow");
-        },
-        hideLogin() {
-            $('#sign-in-paper').slideUp();
+            $('#sign-in-paper').show();
         }
     }
 });

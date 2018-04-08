@@ -4,11 +4,17 @@
     overflow: hidden;
     display: none;
     position: absolute;
-    right: 0px;
     top: 0px;
     bottom: 0px;
-    left: 0px;
+    left: 50%;
+    transform: translate(-50%, 0);
     z-index: 150;
+}
+
+.sign-in-wrapper {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
 }
 
 .sign-in-form {
@@ -16,6 +22,14 @@
     border: 1px solid #dddddd;
     border-radius: 12px;
     margin-top: 20%;
+    padding: 4px;
+
+    .login-exit {
+        border: none;
+        position: absolute;
+        right: 0;
+        background-color: rgba(0,0,0,0);
+    }
 
     %login-input {
         padding: 6px 25px;

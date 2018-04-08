@@ -19,6 +19,8 @@ export default Component.extend({
                 component.get('auth_service').authenticate({
                     "username":username,
                     "hashword":hashword
+                }).then(() => {
+                    component.send('hideLogin');
                 }).catch(() => {
                     // thankyou
                     component.set('errorMessage', "Incorrect username or password");

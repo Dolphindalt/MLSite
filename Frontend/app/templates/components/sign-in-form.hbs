@@ -6,7 +6,7 @@
         {{input id='passwd' placeholder='Password' type='password' value=passwd}}
         <div class='button-wrapper'>
             <button id='button' type="submit">Sign in</button>
-            {{#link-to 'register'}}<button id='button'>Register</button>{{/link-to}}
+            {{#link-to 'register'}}<button id='button' {{action 'hideLogin'}}>Register</button>{{/link-to}}
         </div>
         {{#if errorMessage}}
             <span class='error'>{{errorMessage}}</span>

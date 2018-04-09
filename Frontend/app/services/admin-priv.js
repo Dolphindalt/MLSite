@@ -11,7 +11,7 @@ export default Service.extend({
             }).always((data, status, xhr) => {
                 if(xhr.status !== 200) {
                     run(() => {
-                        resolve(false);
+                        reject(false);
                     });
                 } else {
                     run(() => {

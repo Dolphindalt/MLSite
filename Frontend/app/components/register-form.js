@@ -9,7 +9,7 @@ export default Component.extend({
     router: service(),
     actions: {
         success() {
-            this.get('router').transitionTo('sign-in');
+            this.get('router').transitionTo('index');
         },
         register() {
             let { username, passwd, passwd2} = this.getProperties('username', 'passwd', 'passwd2');

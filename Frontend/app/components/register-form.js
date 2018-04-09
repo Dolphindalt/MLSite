@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import SHA256 from 'cryptojs/sha256';
+import { v4 } from 'ember-uuid';
 
 export default Component.extend({
     currentDate: service('current-date'),
@@ -41,7 +42,9 @@ export default Component.extend({
                 data: JSON.stringify({
                     "username":username,
                     "hashword":hashword,
-                    "date_created":this.get('currentDate').getDate()
+                    "admin":false,
+                    "date_created":this.get('currentDate').getDate(),
+                    "uuid":v4()
                 }),
                 error: function(xhr) {
                     comp.set('errorMessage', xhr.responseText);

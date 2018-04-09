@@ -42,6 +42,7 @@ impl Database {
             "hashword": user.hashword,
             "admin": user.admin,
             "date_created": user.date_created,
+            "uuid": user.uuid,
         };
 
         collection.insert_one(doc.clone(), None)
@@ -122,13 +123,29 @@ impl Database {
         }
     }
 
+    /// Finds a document in the given collection with the given username
     pub fn find_document_with_username<T>(&self, collection: &str, username: &str) -> Option<T> 
         where T: Deserialize<'static> {
         let collection = self.client.db(DB).collection(collection);
         let result = collection.find_one(Some(doc!{ "username" => username}), None);
 
-        if let Some(doc) = result.unwrap() {
-            Some(bson::from_bson::<T>(bson::Bson::Document(doc)).unwrap())
+        let doc_unparsed = match result {
+            Ok(d) => d,
+            Err(e) => {
+                println!("{}", e);
+                None
+            }
+        };
+
+        if let Some(doc) = doc_unparsed {
+            let bson = match bson::from_bson::<T>(bson::Bson::Document(doc)) {
+                Ok(b) => b,
+                Err(e) => {
+                    println!("{}", e);
+                    return None;
+                }
+            };
+            Some(bson)
         } else {
             None
         }

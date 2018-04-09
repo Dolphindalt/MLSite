@@ -10,7 +10,6 @@ use serde_json::Value;
 use router::Router;
 
 use models::User;
-use models::PreUser;
 use database::USER_COLLECTION;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
@@ -30,20 +29,14 @@ impl Handler for UserCreateHandler {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
-        let user: PreUser = try_handler!(json::decode(&payload), status::BadRequest);
+        let user: User = try_handler!(json::decode(&payload), status::BadRequest);
 
         let opt = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &user.username); // do not do this in the if let, or there will be deadlock
 
         if let Some(_user) = opt {
             Ok(Response::with((status::Conflict, "That username is already in use")))
         } else { // the user was not found, thus the username is available
-            let our_guy = User { 
-                username: user.username,
-                hashword: user.hashword,
-                admin: false,
-                date_created: user.date_created,
-            };
-            lock!(self.database).add_user(our_guy);
+            lock!(self.database).add_user(user);
             Ok(Response::with((status::Created, payload)))
         }
     }

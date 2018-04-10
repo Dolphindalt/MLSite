@@ -1,15 +1,16 @@
 <div class='main-centered-container'>
-    <h2>Create A News Post</h2>
-    <form {{action 'post_news' on='submit'}}>
-        <label>Title</label>
-        {{input value=model.title}}
-        <label for='body'>Description</label>
-        {{textarea value=model.body}}
-        <button type='submit'>Post</button>
-        {{#if errorMessage}}
-            <p class='error'>{{errorMessage}}</p>
-        {{/if}}
+    <div class='create-news-post-wrapper'>
+        <div class='create-news-post-heading'>Create A News Post</div>
+        <form {{action 'post_news' on='submit'}}>
+            <label>Title</label>
+            {{input value=model.title}}
+            {{textarea value=model.body}}
+            <button type='submit'>Post</button>
+            {{#if errorMessage}}
+                <p class='error'>{{errorMessage}}</p>
+            {{/if}}
         </form>
+    </div>
 </div>
 
 {{outlet}}

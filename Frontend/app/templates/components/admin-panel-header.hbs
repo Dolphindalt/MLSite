@@ -1,0 +1,7 @@
+{{#if session.admin}}
+    <div class="admin-header">
+        {{#link-to 'home.create-post'}}Post News{{/link-to}}
+    </div>
+{{/if}}
+
+{{yield}}

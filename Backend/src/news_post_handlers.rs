@@ -10,7 +10,6 @@ use serde_json;
 use serde_json::Value;
 
 use models::NewsPost;
-use userdata::extract_token_data_from_header;
 use database::NEWS_POST_COLLECTION;
 
 pub struct NewsPostFeedHandler {

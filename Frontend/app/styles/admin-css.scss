@@ -1,0 +1,22 @@
+// admin-css.scss
+// For the admin header and admin panel
+
+$a-tags: 'a, a:active, a:hover, a:visited';
+$a-tags-hover: 'a:active, a:hover';
+
+.admin-header {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.747);
+    grid-column-start: span 3;
+
+    #{$a-tags} {
+        display: inline;
+        text-decoration: none;
+        font-size: 12px;
+        color: white;
+    }
+
+    #{$a-tags=hover} {
+        color: blue;
+    }
+}

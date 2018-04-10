@@ -17,6 +17,22 @@ export default Route.extend({
     actions: {
         post_news() {
             let new_post = this.modelFor('home.create-post');
+
+            if(new_post.title == "" || new_post.body == "") {
+                this.set('errorMessage', "Some fields are empty");
+                return;
+            }
+
+            if(new_post.title.len() < 4) {
+                this.set('errorMessage', "The post title is too tiny");
+                return;
+            }
+
+            if(new_post.body.len() < 20) {
+                this.set('errorMessage', "Post is too tiny");
+                return;
+            }
+
             new_post.set('author', this.get('session').get('username'));
             new_post.set('datetime', this.get('date').getDate());
             new_post.set('uuid', v4());

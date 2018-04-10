@@ -14,6 +14,7 @@ Router.map(function() {
     this.route('view-news', { path: "/view-news/:uuid" });
   });
   this.route('profile', { path: "/profile/:username" });
+  this.route('admin-panel');
 });
 
 export default Router;

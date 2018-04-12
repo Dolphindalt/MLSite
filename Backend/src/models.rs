@@ -17,3 +17,10 @@ pub struct User {
     pub staff: bool,
     pub rank: String,
 }
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct Email {
+    pub uuid: String,
+    pub email: String,
+    pub linkUuid: String,
+}

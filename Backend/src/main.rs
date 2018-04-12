@@ -12,6 +12,8 @@ extern crate serde;
 extern crate serde_json;
 extern crate unicase;
 extern crate jsonwebtoken as jwt;
+extern crate lettre_email;
+extern crate lettre;
 
 mod database;
 mod models;

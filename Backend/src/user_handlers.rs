@@ -8,8 +8,11 @@ use jwt::{encode, Header};
 use serde_json;
 use serde_json::Value;
 use router::Router;
+use lettre_email::EmailBuilder;
+use lettre::{EmailTransport, SmtpTransport};
 
 use models::User;
+use models::Email;
 use database::USER_COLLECTION;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
@@ -29,15 +32,33 @@ impl Handler for UserCreateHandler {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
-        let user: User = try_handler!(json::decode(&payload), status::BadRequest);
+        let email: Email = try_handler!(json::decode(&payload), status::BadRequest);
 
-        let opt = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &user.username); // do not do this in the if let, or there will be deadlock
+        let opt = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, Some(doc!{ "uuid" => &email.uuid }), None); // do not do this in the if let, or there will be deadlock
 
-        if let Some(_user) = opt {
-            Ok(Response::with((status::Conflict, "That username is already in use")))
+        if opt.len() > 0 {
+            Ok(Response::with((status::Conflict, "You are already registered")))
         } else { // the user was not found, thus the username is available
-            lock!(self.database).add_user(user);
-            Ok(Response::with((status::Created, payload)))
+            lock!(self.database).add_email_request(email.clone());
+            // this function will need to be changed
+            let content = format!("Navigate to this link to complete the registration process: <a>localhost:4200/register/{}</a>", email.linkUuid);
+
+            let builder = try_handler!(EmailBuilder::new()
+                .to(email.email)
+                .from("noreply@go.playminecraft.org")
+                .subject("Medieval Lords Registration")
+                .text(content)
+                .build(), status::BadRequest);
+
+            let mut mailer = SmtpTransport::builder_unencrypted_localhost().unwrap().build();
+            let result = mailer.send(&builder);
+
+            if result.is_ok() {
+                Ok(Response::with((status::Created, payload)))
+            } else {
+                Ok(Response::with(status::BadRequest))
+            }
+
         }
     }
 }

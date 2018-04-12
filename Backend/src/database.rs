@@ -7,6 +7,7 @@ use mongodb::coll::options::FindOptions;
 
 use models::NewsPost;
 use models::User;
+use models::Email;
 
 const HOSTNAME: &str = "localhost";
 const PORT: u16 = 27017;
@@ -14,6 +15,7 @@ const DB: &str = "test";
 
 pub const USER_COLLECTION: &str = "users";
 pub const NEWS_POST_COLLECTION: &str = "newsposts";
+pub const EMAIL_REQUEST_COLLECTION: &str = "emails";
 
 pub struct Database {
     client: Client
@@ -50,7 +52,21 @@ impl Database {
 
         collection.insert_one(doc.clone(), None)
             .ok().expect("Failed to insert the new user!");
-   }
+    }
+
+    /// Adds a new email request to the emails collection in the mongo database.
+    pub fn add_email_request(&mut self, email: Email) {
+        let collection = self.client.db(DB).collection(EMAIL_REQUEST_COLLECTION);
+
+        let doc = doc! {
+            "uuid": email.uuid,
+            "email": email.email,
+            "linkUuid": email.linkUuid,
+        };
+
+        collection.insert_one(doc.clone(), None)
+            .ok().expect("Failed to insert email request");
+    }
 
     /// Adds a news posts to the news posts collection in the mongo database.
     pub fn add_news_post(&mut self, news_post: NewsPost) {

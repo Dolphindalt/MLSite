@@ -44,7 +44,7 @@ fn main() {
     router.post("/news-post-models", handlers.news_post_post_handler, "home_newspost");
     router.get("/news-post-models/:id", handlers.news_post_handler, "home_newspost_id");
 
-    router.post("/register", handlers.user_created_handler, "user_created");
+    router.post("/register/:uuid", handlers.user_created_handler, "user_created");
     router.post("/login", handlers.login_request_handler, "user_login");
 
     router.get("/user/:username", handlers.user_get_single_handler, "user_get_single");

@@ -6,6 +6,7 @@ import { v4 } from 'ember-uuid';
 
 export default Component.extend({
     currentDate: service('current-date'),
+    uuid: service('uuid-to-username'),
     errorMessage: "",
     router: service(),
     actions: {
@@ -13,15 +14,10 @@ export default Component.extend({
             this.get('router').transitionTo('index');
         },
         register() {
-            let { username, passwd, passwd2} = this.getProperties('username', 'passwd', 'passwd2');
+            let { passwd, passwd2} = this.getProperties('passwd', 'passwd2');
 
             if(passwd != passwd2) {
                 this.set('errorMessage', "The two passwords entered did not match");
-                return;
-            }
-
-            if(username.length < 4) {
-                this.set('errorMessage', "The username specified must be at least 4 characters");
                 return;
             }
 
@@ -30,6 +26,14 @@ export default Component.extend({
                 return;
             }
             
+            let username;
+            this.get('uuid').uuidToUsername(this.get("data").get("uuid")).then((user) => {
+                username = user;
+            }).catch(() => {
+                this.set('errorMessage', "Could not find a username from the uuid");
+                return;
+            });
+
             var hashword = SHA256(passwd).toString();
             var comp = this; // stupid ajax
             
@@ -44,7 +48,7 @@ export default Component.extend({
                     "hashword":hashword,
                     "admin":false,
                     "date_created":this.get('currentDate').getDate(),
-                    "uuid":v4(),
+                    "uuid":this.get("data").get("uuid"),
                     "staff":false,
                     "rank":"Default"
                 }),

@@ -7,7 +7,7 @@ const Router = EmberRouter.extend({
 });
  
 Router.map(function() {
-  this.route('register');
+  this.route('register', { path: "/:uuid" });
 
   this.route('home', function() {
     this.route('create-post');

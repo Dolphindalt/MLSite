@@ -44,7 +44,9 @@ export default Component.extend({
                     "hashword":hashword,
                     "admin":false,
                     "date_created":this.get('currentDate').getDate(),
-                    "uuid":v4()
+                    "uuid":v4(),
+                    "staff":false,
+                    "rank":"Default"
                 }),
                 error: function(xhr) {
                     comp.set('errorMessage', xhr.responseText);

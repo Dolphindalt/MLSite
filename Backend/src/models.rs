@@ -14,4 +14,6 @@ pub struct User {
     pub admin: bool,
     pub date_created: String,
     pub uuid: String,
+    pub staff: bool,
+    pub rank: String,
 }

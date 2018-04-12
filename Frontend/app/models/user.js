@@ -5,4 +5,6 @@ export default DS.Model.extend({
     admin: DS.attr('boolean'),
     date_created: DS.attr('string'),
     uuid: DS.attr('string'),
+    staff: DS.attr('boolean'),
+    rank: DS.attr('string')
 });

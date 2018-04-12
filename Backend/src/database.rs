@@ -3,6 +3,7 @@ use mongodb::db::ThreadedDatabase;
 use bson;
 use uuid::Uuid;
 use serde::de::Deserialize;
+use mongodb::coll::options::FindOptions;
 
 use models::NewsPost;
 use models::User;
@@ -43,6 +44,8 @@ impl Database {
             "admin": user.admin,
             "date_created": user.date_created,
             "uuid": user.uuid,
+            "staff": user.staff,
+            "rank": user.rank,
         };
 
         collection.insert_one(doc.clone(), None)
@@ -77,11 +80,11 @@ impl Database {
     /// let database = Database::new();
     /// let vec_of_newsposts = database.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
     /// ```
-    pub fn get_all_documents<T>(&self, collection: &str) -> Vec<T> 
+    pub fn get_all_documents<T>(&self, collection: &str, doc_opt: Option<bson::Document>, find_opt: Option<FindOptions>) -> Vec<T> 
         where T: Deserialize<'static> {
         let mut docs = Vec::new();
         let collection = self.client.db(DB).collection(collection);
-        let cursor = collection.find(None, None).ok().expect("Failed to execute find");
+        let cursor = collection.find(doc_opt, find_opt).ok().expect("Failed to execute find");
         
         for doc in cursor {
             let d = doc.unwrap();
@@ -89,7 +92,6 @@ impl Database {
                 bson::from_bson::<T>(bson::Bson::Document(d)).unwrap()
             );
         };
-        docs.reverse();
         docs
     }
 
@@ -111,6 +113,7 @@ impl Database {
     ///     None => println!("We did not find a document!"),
     /// };
     /// ```
+    #[deprecated]
     pub fn find_document_with_uuid<T>(&self, collection: &str, id: &Uuid) -> Option<T>
         where T: Deserialize<'static> {
         let collection = self.client.db(DB).collection(collection);
@@ -124,6 +127,7 @@ impl Database {
     }
 
     /// Finds a document in the given collection with the given username
+    #[deprecated]
     pub fn find_document_with_username<T>(&self, collection: &str, username: &str) -> Option<T> 
         where T: Deserialize<'static> {
         let collection = self.client.db(DB).collection(collection);

@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import $ from 'jquery';
 
 export default Component.extend({
     math: service('math'),
@@ -7,14 +8,18 @@ export default Component.extend({
     tagName: 'canvas',
     width: 600,
     height: 300,
-    particles: [],
+    //particles: [],
     particlesNum: 70,
-    colors: ["#111111", "#6d0000"],
+    //colors: ["#111111", "#6d0000"],
     attributeBindings: ['width', 'height'],
     mycanvas: undefined,
     ctx: undefined,
     didRender() {
-        this.set('mycanvas', Ember.$("canvas")[0]);
+        this.particles = [];
+        this.colors = ["#111111", "#6d0000"];
+        this.attributeBindings = ['width', 'height'];
+
+        this.set('mycanvas', $("canvas")[0]);
         this.set('ctx', this.get('mycanvas').getContext("2d"));
         
         for(let i = 0; i < this.get('particlesNum'); i++) {

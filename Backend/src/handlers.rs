@@ -50,6 +50,7 @@ pub struct Handlers {
     pub user_created_handler: UserCreateHandler,
     pub login_request_handler: LoginRequestHandler,
     pub user_get_single_handler: GetSingleUserHandler,
+    pub user_register_handler: UserRegisterHandler,
 }
 
 impl Handlers {
@@ -63,6 +64,7 @@ impl Handlers {
             user_created_handler: UserCreateHandler::new(db.clone()),
             login_request_handler: LoginRequestHandler::new(db.clone()),
             user_get_single_handler: GetSingleUserHandler::new(db.clone()),
+            user_register_handler: UserRegisterHandler::new(db.clone()),
         }
     }
 }

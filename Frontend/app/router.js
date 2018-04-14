@@ -13,7 +13,7 @@ Router.map(function() {
     this.route('create-post');
     this.route('view-news', { path: "/view-news/:uuid" });
   });
-  this.route('profile', { path: "/profile/:username" });
+  this.route('profile', { path: "/profile/:uuid" });
   this.route('admin-panel');
 });
 

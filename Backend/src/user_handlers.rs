@@ -43,12 +43,15 @@ impl Handler for UserCreateHandler {
             // this function will need to be changed
             let content = format!("Navigate to this link to complete the registration process: <a>localhost:4200/register/{}</a>", email.linkUuid);
 
-            let builder = try_handler!(EmailBuilder::new()
+            let builder = match EmailBuilder::new()
                 .to(email.email)
                 .from("noreply@go.playminecraft.org")
                 .subject("Medieval Lords Registration")
-                .text(content)
-                .build(), status::BadRequest);
+                .html(content)
+                .build() {
+                    Ok(s) => s,
+                    Err(e) => panic!("{:?}", e),
+                };
 
             let mut mailer = SmtpTransport::builder_unencrypted_localhost().unwrap().build();
             let result = mailer.send(&builder);
@@ -56,10 +59,41 @@ impl Handler for UserCreateHandler {
             if result.is_ok() {
                 Ok(Response::with((status::Created, payload)))
             } else {
+                println!("Mailer send result not okay: {:?}", result);
                 Ok(Response::with(status::BadRequest))
             }
 
         }
+    }
+}
+
+pub struct UserRegisterHandler {
+    database: Arc<Mutex<Database>>,
+}
+
+impl UserRegisterHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> UserRegisterHandler {
+        UserRegisterHandler{ database }
+    }
+}
+
+impl Handler for UserRegisterHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let post_id = get_http_param!(req, "uuid");
+        
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+
+        let user: User;
+        if let Ok(user_data) = serde_json::from_str::<User>(&payload) {
+            user = user_data;
+        } else {
+            return Ok(Response::with(status::BadRequest))
+        };
+
+        lock!(self.database).add_user(user);
+
+        Ok(Response::with(status::Ok))
     }
 }
 
@@ -80,9 +114,11 @@ impl Handler for LoginRequestHandler {
 
         let login_req_data: Value = try_handler!(serde_json::from_str(&payload), status::BadRequest);
 
-        let username: String;
-        if let Some(shaky_username) = login_req_data["username"].as_str() {
-            username = String::from(shaky_username);
+        println!("{:?}", login_req_data);
+
+        let uuid: String;
+        if let Some(shaky_uuid) = login_req_data["uuid"].as_str() {
+            uuid = String::from(shaky_uuid);
         } else {
             return Ok(Response::with(status::BadRequest));
         };
@@ -94,7 +130,7 @@ impl Handler for LoginRequestHandler {
             return Ok(Response::with(status::BadRequest));
         }
 
-        let opt: Option<User> = lock!(self.database).find_document_with_username::<User>(USER_COLLECTION, &username);
+        let opt: Option<User> = lock!(self.database).find_one_document::<User>(USER_COLLECTION, Some(doc!{"uuid" : uuid }), None);
         
         if let Some(user) = opt {
             if user.hashword.eq(&hashword) {
@@ -124,10 +160,10 @@ impl GetSingleUserHandler {
 
 impl Handler for GetSingleUserHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let ref username = get_http_param!(req, "username");
+        let uuid: &str = get_http_param!(req, "uuid");
 
         let locked = lock!(self.database);
-        if let Some(userdata) = locked.find_document_with_username::<User>(USER_COLLECTION, &username) {
+        if let Some(userdata) = locked.find_one_document::<User>(USER_COLLECTION, Some(doc!{ "uuid" => uuid }), None) {
             let payload = try_handler!(json::encode(&userdata), status::InternalServerError);
             Ok(Response::with((status::Ok, payload)))
         } else {

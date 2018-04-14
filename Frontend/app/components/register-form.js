@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import SHA256 from 'cryptojs/sha256';
-import { v4 } from 'ember-uuid';
 
 export default Component.extend({
     currentDate: service('current-date'),
@@ -25,14 +24,6 @@ export default Component.extend({
                 this.set('errorMessage', "The password must be at least 6 characters");
                 return;
             }
-            
-            let username;
-            this.get('uuid').uuidToUsername(this.get("data").get("uuid")).then((user) => {
-                username = user;
-            }).catch(() => {
-                this.set('errorMessage', "Could not find a username from the uuid");
-                return;
-            });
 
             var hashword = SHA256(passwd).toString();
             var comp = this; // stupid ajax
@@ -44,7 +35,7 @@ export default Component.extend({
                 contentType: "application/json; charset=utf-8",
                 crossDomain: true,
                 data: JSON.stringify({
-                    "username":username,
+                    "email":this.get("data").get("email"),
                     "hashword":hashword,
                     "admin":false,
                     "date_created":this.get('currentDate').getDate(),

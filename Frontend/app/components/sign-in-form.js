@@ -7,6 +7,7 @@ export default Component.extend({
     classNames: ['sign-in-form'],
     tagName: '',
     auth_service: service('auth-service'),
+    uuidToUsername: service('uuid-to-username'),
     errorMessage: "",
     actions: {
         sign_in() {
@@ -15,18 +16,24 @@ export default Component.extend({
             var hashword = SHA256(passwd).toString();
             this.set('errorMessage', '');
 
-            (function(component) {
-                component.get('auth_service').authenticate({
-                    "username":username,
-                    "hashword":hashword
-                }).then(() => {
-                    component.send('hideLogin');
-                }).catch(() => {
-                    // thankyou
-                    component.set('errorMessage', "Incorrect username or password");
-                });
-                // route to the home page
-            }) (this);
+            let uuid;
+
+            this.get('uuidToUsername').usernameToUuid(username).then((data) => {
+                uuid = data;
+                
+                (function(component) {
+                    component.get('auth_service').authenticate({
+                        "uuid":uuid,
+                        "hashword":hashword
+                    }).then(() => {
+                        component.send('hideLogin');
+                    }).catch(() => {
+                        // thankyou
+                        component.set('errorMessage', "Incorrect username or password");
+                    });
+                    // route to the home page
+                }) (this);
+            });
         },
         hideLogin() {
             this.set('errorMessage', "");

@@ -6,15 +6,13 @@ import { inject as service } from '@ember/service';
 
 export default Service.extend({
     token: "",
-    username: "",
     admin: false,
     isAuthenticated: false,
     adminPriv: service('admin-priv'),
     invalidate: function() {
         this.set('isAuthenticated', false);
         this.set('token', '');
-        this.set('username', '');
-        this.set('admin', false);
+        this.set('admin', false); 
     },
     authenticate: function(data) {
         let comp = this;
@@ -25,12 +23,11 @@ export default Service.extend({
                 url: 'http://127.0.0.1:8000/login',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    username: data.username,
+                    uuid: data.uuid,
                     password: data.hashword
                 })
             }).done((res) => {
                 run(() => {
-                    comp.set('username', data.username);
                     comp.set('isAuthenticated', true);
                     comp.set('token', res.token);
                     

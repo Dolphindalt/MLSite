@@ -41,8 +41,8 @@ impl Database {
         let collection = self.client.db(DB).collection(USER_COLLECTION);
 
         let doc = doc! {
-            "username": user.username,
             "hashword": user.hashword,
+            "email": user.email,
             "admin": user.admin,
             "date_created": user.date_created,
             "uuid": user.uuid,
@@ -85,17 +85,6 @@ impl Database {
     }
 
     /// Get all documents from a specified collection.
-    /// 
-    /// # Examples
-    /// 
-    /// ```
-    /// use database::Database;
-    /// use database::NEWS_POST_COLLECTION;
-    /// use models::NewsPost;
-    /// 
-    /// let database = Database::new();
-    /// let vec_of_newsposts = database.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
-    /// ```
     pub fn get_all_documents<T>(&self, collection: &str, doc_opt: Option<bson::Document>, find_opt: Option<FindOptions>) -> Vec<T> 
         where T: Deserialize<'static> {
         let mut docs = Vec::new();
@@ -109,6 +98,25 @@ impl Database {
             );
         };
         docs
+    }
+
+    /// Find a single document.
+    pub fn find_one_document<T>(&self, collection: &str, doc_opt: Option<bson::Document>, find_opt: Option<FindOptions>) -> Option<T> 
+        where T: Deserialize<'static> {
+            let collection = self.client.db(DB).collection(collection);
+            if let Ok(t) = collection.find_one(doc_opt, find_opt) {
+                if let Some(v) = t {
+                    if let Ok(doc) = bson::from_bson::<T>(bson::Bson::Document(v)) {
+                        Some(doc)
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
     }
 
     /// Finds a document in the given collection with the given uuid.

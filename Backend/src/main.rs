@@ -44,10 +44,11 @@ fn main() {
     router.post("/news-post-models", handlers.news_post_post_handler, "home_newspost");
     router.get("/news-post-models/:id", handlers.news_post_handler, "home_newspost_id");
 
-    router.post("/register/:uuid", handlers.user_created_handler, "user_created");
+    router.post("/register", handlers.user_created_handler, "user_pending");
+    router.post("/register/:uuid", handlers.user_register_handler, "user_registered");
     router.post("/login", handlers.login_request_handler, "user_login");
 
-    router.get("/user/:username", handlers.user_get_single_handler, "user_get_single");
+    router.get("/user/:uuid", handlers.user_get_single_handler, "user_get_single");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

@@ -114,8 +114,6 @@ impl Handler for LoginRequestHandler {
 
         let login_req_data: Value = try_handler!(serde_json::from_str(&payload), status::BadRequest);
 
-        println!("{:?}", login_req_data);
-
         let uuid: String;
         if let Some(shaky_uuid) = login_req_data["uuid"].as_str() {
             uuid = String::from(shaky_uuid);

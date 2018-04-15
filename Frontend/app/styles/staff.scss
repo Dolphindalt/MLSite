@@ -1,0 +1,78 @@
+// staff.scss
+
+.staff-flex-mod {
+    flex-wrap: wrap !important;
+    align-items: center;
+}
+
+.staff-container {
+    padding: 5px;
+
+    .staff-table {
+        border-radius: 12px;
+        border: 1px solid rgb(221, 221, 221);
+        display: table;
+
+        .staff-inline-wrapper {
+            display: inline-block;
+        }
+
+        img {
+            padding-top: 5px;
+        }
+
+        .staff-name-text {
+            padding: 0px 15px;
+            font-size: 20px;
+            font-weight: 600;
+            a {
+                text-decoration: none;
+                color: rgb(22, 95, 117);
+            }
+        }
+
+        %staff-rank-text {
+            font-size: 16px;
+            padding: 2px;
+            color: white;
+            text-shadow: 2px 2px black;
+            border: 1px solid rgb(221, 221, 221);
+            border-radius: 12px;
+        }
+
+        .staff-rank-display-Owner {
+            @extend %staff-rank-text;
+            background-color: rgb(163, 10, 117);
+        }
+
+        .staff-rank-display-Developer {
+            @extend %staff-rank-text;
+            background-color: rgb(206, 76, 167);
+        }
+
+        .staff-rank-display-Developer {
+            @extend %staff-rank-text;
+            background-color: rgb(206, 76, 167);
+        }
+
+        .staff-rank-display-Builder {
+            @extend %staff-rank-text;
+            background-color: rgb(33, 21, 136);
+        }
+
+        .staff-rank-display-Admin {
+            @extend %staff-rank-text;
+            background-color: rgb(255, 53, 53);
+        }
+
+        .staff-rank-display-SMod {
+            @extend %staff-rank-text;
+            background-color: rgb(79, 189, 75);
+        }
+
+        .staff-rank-display-Mod {
+            @extend %staff-rank-text;
+            background-color: rgb(92, 108, 199);
+        }
+    }
+}

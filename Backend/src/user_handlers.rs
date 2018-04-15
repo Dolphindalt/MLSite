@@ -16,6 +16,7 @@ use models::Email;
 use database::USER_COLLECTION;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
+const STAFF_RANKS: [&str; 6] = [ "Owner", "Developer", "Builder", "Admin", "SMod", "Mod" ];
 
 pub struct UserCreateHandler {
     database: Arc<Mutex<Database>>
@@ -167,5 +168,28 @@ impl Handler for GetSingleUserHandler {
         } else {
             Ok(Response::with(status::NotFound))
         }
+    }
+}
+
+pub struct GetStaffUsersHandler {
+    database: Arc<Mutex<Database>>,
+}
+
+impl GetStaffUsersHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetStaffUsersHandler {
+        GetStaffUsersHandler { database }
+    }
+}
+
+impl Handler for GetStaffUsersHandler {
+    fn handle(&self, _: &mut Request) -> IronResult<Response> {
+        let locked = lock!(self.database);
+        let mut data = Vec::new();
+        for (_, elem) in STAFF_RANKS.iter_mut().enumerate() {
+            let rank = String::from(elem.clone());
+            &data.push(locked.get_all_documents::<User>(USER_COLLECTION, Some(doc!{ "rank" => rank }), None));
+        }
+        let payload = try_handler!(json::encode(&data));
+        Ok(Response::with((status::Ok, payload)))
     }
 }

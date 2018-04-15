@@ -49,6 +49,7 @@ fn main() {
     router.post("/login", handlers.login_request_handler, "user_login");
 
     router.get("/user/:uuid", handlers.user_get_single_handler, "user_get_single");
+    router.get("/user/staff", handlers.user_get_staff_handler, "user_get_staff");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

@@ -1,0 +1,28 @@
+<div class='main-centered-container'>
+    <div class='fancy-header'>Owner</div>
+    <div class='horizonal-flex-container' style='flex-wrap: wrap;'>
+        {{post-list data=model.[0] cname="staff-user-view"}}
+    </div>
+    <div class='fancy-header'>Developer</div>
+    <div class='horizonal-flex-container staff-flex-mod'>
+        {{post-list data=model.[1] cname="staff-user-view"}}
+    </div>
+    <div class='fancy-header'>Builder</div>
+    <div class='horizonal-flex-container'>
+        {{post-list data=model.[2] cname="staff-user-view"}}
+    </div>
+    <div class='fancy-header'>Admin</div>
+    <div class='horizonal-flex-container'>
+        {{post-list data=model.[3] cname="staff-user-view"}}
+    </div>
+    <div class='fancy-header'>SMod</div>
+    <div class='horizonal-flex-container'>
+        {{post-list data=model.[4] cname="staff-user-view"}}
+    </div>
+    <div class='fancy-header'>Mod</div>
+    <div class='horizonal-flex-container'>
+        {{post-list data=model.[5] cname="staff-user-view"}}
+    </div>
+</div>
+
+{{outlet}}

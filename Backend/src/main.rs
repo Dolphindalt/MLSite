@@ -52,6 +52,11 @@ fn main() {
 
     router.get("/user/:uuid", handlers.user_get_single_handler, "user_get_single");
     router.get("/user/staff", handlers.user_get_staff_handler, "user_get_staff");
+    
+    router.get("/forums/:category", handlers.get_all_posts_handler, "get_all_posts");
+    router.post("/forums/create/:category", handlers.create_post_handler, "create_post");
+
+    router.get("/search/", handlers.search_player_handler, "search_user");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

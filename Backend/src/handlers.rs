@@ -8,6 +8,7 @@ use iron::method::Method;
 use userdata::extract_token_data_from_header;
 use user_handlers::*;
 use news_post_handlers::*;
+use forum_handlers::*;
 
 macro_rules! try_handler {
     ($e:expr) => {
@@ -52,6 +53,9 @@ pub struct Handlers {
     pub user_get_single_handler: GetSingleUserHandler,
     pub user_register_handler: UserRegisterHandler,
     pub user_get_staff_handler: GetStaffUsersHandler,
+    pub get_all_posts_handler: GetAllPostsHandler,
+    pub create_post_handler: CreatePostHandler,
+    pub search_player_handler: GetRegexUsersHandler,
 }
 
 impl Handlers {
@@ -67,6 +71,9 @@ impl Handlers {
             user_get_single_handler: GetSingleUserHandler::new(db.clone()),
             user_register_handler: UserRegisterHandler::new(db.clone()),
             user_get_staff_handler: GetStaffUsersHandler::new(db.clone()),
+            get_all_posts_handler: GetAllPostsHandler::new(db.clone()),
+            create_post_handler: CreatePostHandler::new(db.clone()),
+            search_player_handler: GetRegexUsersHandler::new(db.clone()),
         }
     }
 }

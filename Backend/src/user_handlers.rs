@@ -193,3 +193,36 @@ impl Handler for GetStaffUsersHandler {
         Ok(Response::with((status::Ok, payload)))
     }
 }
+
+pub struct GetRegexUsersHandler {
+    database: Arc<Mutex<Database>>,
+}
+
+impl GetRegexUsersHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetRegexUsersHandler {
+        GetRegexUsersHandler { database }
+    }
+}
+
+impl Handler for GetRegexUsersHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+
+        let search_data: Value = try_handler!(serde_json::from_str(&payload), status::BadRequest);
+
+        let search_string: &str;
+        if let Some(shaky_search) = search_data["data"].as_str() {
+            search_string = shaky_search;
+        } else {
+            return Ok(Response::with(status::Ok));
+        };
+
+        let formated_search_string = format!("/{}/", search_string);
+
+        let docs = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, Some(doc!{ "username" => formated_search_string }), None);
+        let data = try_handler!(json::encode(&docs), status::BadRequest);
+
+        Ok(Response::with((status::Ok, data)))
+    }
+}

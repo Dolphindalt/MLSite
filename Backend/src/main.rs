@@ -22,6 +22,8 @@ mod handlers;
 mod user_handlers;
 mod news_post_handlers;
 mod userdata;
+mod forum_handlers;
+mod helpers;
 
 use database::Database;
 use handlers::*;

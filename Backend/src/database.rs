@@ -3,11 +3,14 @@ use mongodb::db::ThreadedDatabase;
 use bson;
 use uuid::Uuid;
 use serde::de::Deserialize;
-use mongodb::coll::options::FindOptions;
+use mongodb::coll::options::{FindOptions, UpdateOptions};
 
 use models::NewsPost;
 use models::User;
 use models::Email;
+use models::ForumPost;
+
+use helpers;
 
 const HOSTNAME: &str = "localhost";
 const PORT: u16 = 27017;
@@ -66,6 +69,15 @@ impl Database {
 
         collection.insert_one(doc.clone(), None)
             .ok().expect("Failed to insert email request");
+    }
+
+    pub fn add_forum_post(&mut self, category: &str, post_chain: ForumPost) {
+        let collection = self.client.db(DB).collection(category);
+
+        let doc = helpers::encode::<ForumPost>(&post_chain).unwrap();
+
+        collection.insert_one(doc, None)
+            .ok().expect("Failed to insert a forum post chain");
     }
 
     /// Adds a news posts to the news posts collection in the mongo database.
@@ -150,35 +162,6 @@ impl Database {
         }
     }
 
-    /// Finds a document in the given collection with the given username
-    #[deprecated]
-    pub fn find_document_with_username<T>(&self, collection: &str, username: &str) -> Option<T> 
-        where T: Deserialize<'static> {
-        let collection = self.client.db(DB).collection(collection);
-        let result = collection.find_one(Some(doc!{ "username" => username}), None);
-
-        let doc_unparsed = match result {
-            Ok(d) => d,
-            Err(e) => {
-                println!("{}", e);
-                None
-            }
-        };
-
-        if let Some(doc) = doc_unparsed {
-            let bson = match bson::from_bson::<T>(bson::Bson::Document(doc)) {
-                Ok(b) => b,
-                Err(e) => {
-                    println!("{}", e);
-                    return None;
-                }
-            };
-            Some(bson)
-        } else {
-            None
-        }
-    }
-
     /// Erase all documents from the given collection matching the query provided.
     /// 
     /// # Examples
@@ -196,6 +179,16 @@ impl Database {
         match collection.delete_many(query, None) {
             Ok(_delete_result) => (),
             Err(err) => panic!("{:?}", err),
+        }
+    }
+
+    /// Updates a single document in the mongo collection provided.
+    pub fn update_document<T>(&self, collection: &str, filter: bson::Document, update: bson::Document, options: Option<UpdateOptions>) -> bool {
+        let collection = self.client.db(DB).collection(collection);
+        if let Ok(_) = collection.update_one(filter, update, options) {
+            true
+        } else {
+            false
         }
     }
 }

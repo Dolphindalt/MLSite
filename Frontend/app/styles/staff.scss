@@ -50,11 +50,6 @@
             background-color: rgb(206, 76, 167);
         }
 
-        .staff-rank-display-Developer {
-            @extend %staff-rank-text;
-            background-color: rgb(206, 76, 167);
-        }
-
         .staff-rank-display-Builder {
             @extend %staff-rank-text;
             background-color: rgb(33, 21, 136);

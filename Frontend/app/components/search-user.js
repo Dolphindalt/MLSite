@@ -7,12 +7,11 @@ export default Component.extend({
     didRender() {
         let searchbar = $("input")[0];
         let timeout = null;
-        console.debug(searchbar);
         searchbar.onkeyup = function() {
             clearTimeout(timeout);
 
             timeout = setTimeout(() => {
-                console.debug(searchbar.value);
+
             }, 1000);
         }
     },

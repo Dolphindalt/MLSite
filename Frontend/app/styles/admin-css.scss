@@ -16,7 +16,7 @@ $a-tags-hover: 'a:active, a:hover';
         color: white;
     }
 
-    #{$a-tags=hover} {
+    #{$a-tags-hover} {
         color: blue;
     }
 }

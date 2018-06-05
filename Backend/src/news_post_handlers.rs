@@ -24,9 +24,13 @@ impl NewsPostFeedHandler {
 
 impl Handler for NewsPostFeedHandler {
     fn handle(&self, _: &mut Request) -> IronResult<Response> {
+        println!("1");
         let mut docs = lock!(self.database).get_all_documents::<NewsPost>(NEWS_POST_COLLECTION, None, None);
+        println!("2");
         docs.reverse();
+        println!("3");
         let payload = try_handler!(json::encode(&docs));
+        println!("4");
         Ok(Response::with((status::Ok, payload)))
     }
 }

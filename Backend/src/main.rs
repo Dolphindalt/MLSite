@@ -32,6 +32,8 @@ use iron::prelude::Chain;
 use iron::Iron;
 use router::Router;
 
+const IP_AND_HOST: &str = "127.0.0.1:8000";
+
 fn main() {
     let database = Database::new();
 
@@ -62,5 +64,6 @@ fn main() {
     chain.link_after(json_content_middleware);
     chain.link_after(cors_after_middleware);
 
-    Iron::new(chain).http("localhost:8000").unwrap();
+    println!("Now serving the site on {}", IP_AND_HOST);
+    Iron::new(chain).http("127.0.0.1:8000").unwrap();
 }

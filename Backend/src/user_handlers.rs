@@ -1,5 +1,9 @@
 use std::sync::{Arc, Mutex};
 use std::io::Read;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
+
 use iron::{status, Handler, IronResult, Request, Response};
 use rustc_serialize::json;
 use database::Database;
@@ -10,10 +14,12 @@ use serde_json::Value;
 use router::Router;
 use lettre_email::EmailBuilder;
 use lettre::{EmailTransport, SmtpTransport};
+use lettre::smtp::authentication::Credentials;
 
 use models::User;
 use models::Email;
 use database::USER_COLLECTION;
+use database::EMAIL_REQUEST_COLLECTION;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 const STAFF_RANKS: [&str; 6] = [ "Owner", "Developer", "Builder", "Admin", "SMod", "Mod" ];
@@ -28,6 +34,16 @@ impl UserCreateHandler {
     }
 }
 
+fn grab_email_credentials() -> (String, String)
+{
+    let f = File::open("email_credentials.txt").expect("Failed to open email_credentials.txt");
+    let file = BufReader::new(&f);
+    let mut lines_itr = file.lines().map(|l| l.unwrap());
+    (lines_itr.next().expect("Failed to find email in email_credentials.txt"), 
+        lines_itr.next().expect("Failed to find password in email_credentials.txt"))
+}
+
+/// Is called by the actual Minecraft server to send an email to a user so that they may register.
 impl Handler for UserCreateHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let mut payload = String::new();
@@ -36,26 +52,37 @@ impl Handler for UserCreateHandler {
         let email: Email = try_handler!(json::decode(&payload), status::BadRequest);
 
         let opt = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, Some(doc!{ "uuid" => &email.uuid }), None); // do not do this in the if let, or there will be deadlock
+        let opt2 = lock!(self.database).get_all_documents::<User>(EMAIL_REQUEST_COLLECTION, Some(doc!{ "uuid" => &email.uuid }), None);
 
         if opt.len() > 0 {
-            Ok(Response::with((status::Conflict, "You are already registered")))
+            Ok(Response::with((status::Conflict, "You are already registered!")))
+        } else if opt2.len() > 0 {
+            Ok(Response::with((status::Conflict, "This account has already attempted to register with a different email. If you think this is an error, please contact support.")))
         } else { // the user was not found, thus the username is available
+
+            let (client_email, client_password) = grab_email_credentials();
+
             lock!(self.database).add_email_request(email.clone());
             // this function will need to be changed
-            let content = format!("Navigate to this link to complete the registration process: <a>localhost:4200/register/{}</a>", email.linkUuid);
+            let content = format!("Navigate to this link to complete the registration process: <a href='localhost:4200/register/{}'>localhost:4200/register/{}</a>", 
+                email.linkUuid, email.linkUuid);
 
             let builder = match EmailBuilder::new()
                 .to(email.email)
-                .from("noreply@go.playminecraft.org")
+                .from(client_email.clone())
                 .subject("Medieval Lords Registration")
                 .html(content)
                 .build() {
                     Ok(s) => s,
                     Err(e) => panic!("{:?}", e),
-                };
+            };
 
-            let mut mailer = SmtpTransport::builder_unencrypted_localhost().unwrap().build();
-            let result = mailer.send(&builder);
+            let c:Credentials = Credentials::new(client_email, client_password);    
+            let mut transport:SmtpTransport = SmtpTransport::simple_builder("smtp.gmail.com")
+                .expect("Failed to create transport")
+                .credentials(c).build();
+
+            let result = transport.send(&builder);
 
             if result.is_ok() {
                 Ok(Response::with((status::Created, payload)))
@@ -64,6 +91,32 @@ impl Handler for UserCreateHandler {
                 Ok(Response::with(status::BadRequest))
             }
 
+        }
+    }
+}
+
+pub struct GetUserRegisterFormHandler {
+    database: Arc<Mutex<Database>>,
+}
+
+impl GetUserRegisterFormHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetUserRegisterFormHandler {
+        GetUserRegisterFormHandler { database }
+    }
+}
+
+/// Validate the url and pass information to the front end, such as email, username, etc. Prepare to prompt user for password.
+impl Handler for GetUserRegisterFormHandler {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let link_uuid = get_http_param!(req, "linkUuid");
+
+        let opt: Option<Email> = lock!(self.database).find_one_document::<Email>(EMAIL_REQUEST_COLLECTION, Some(doc!{"linkUuid" : link_uuid}), None);
+
+        if let Some(email) = opt {
+            let payload = try_handler!(json::encode(&email), status::InternalServerError);
+            Ok(Response::with((status::Ok, payload)))
+        } else {
+            Ok(Response::with((status::Conflict, "Failed to validate url.")))
         }
     }
 }
@@ -78,10 +131,18 @@ impl UserRegisterHandler {
     }
 }
 
+/// This post request will check the url for the proper link uuid and then attempt to register the user
+/// with the information provided from the front end.
 impl Handler for UserRegisterHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let post_id = get_http_param!(req, "uuid");
+        let link_uuid = get_http_param!(req, "linkUuid");
         
+        let opt = lock!(self.database).get_all_documents::<User>(EMAIL_REQUEST_COLLECTION, Some(doc!{ "linkUuid" => &link_uuid }), None);
+
+        if opt.len() != 1 {
+            return Ok(Response::with((status::Conflict, "Your link was invalid or an error has occured.")));
+        }
+
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 

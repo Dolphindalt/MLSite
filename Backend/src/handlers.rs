@@ -56,6 +56,7 @@ pub struct Handlers {
     pub get_all_posts_handler: GetAllPostsHandler,
     pub create_post_handler: CreatePostHandler,
     pub search_player_handler: GetRegexUsersHandler,
+    pub get_user_register_handler: GetUserRegisterFormHandler,
 }
 
 impl Handlers {
@@ -74,6 +75,7 @@ impl Handlers {
             get_all_posts_handler: GetAllPostsHandler::new(db.clone()),
             create_post_handler: CreatePostHandler::new(db.clone()),
             search_player_handler: GetRegexUsersHandler::new(db.clone()),
+            get_user_register_handler: GetUserRegisterFormHandler::new(db.clone()),
         }
     }
 }

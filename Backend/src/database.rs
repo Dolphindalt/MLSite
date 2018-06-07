@@ -20,6 +20,8 @@ pub const USER_COLLECTION: &str = "users";
 pub const NEWS_POST_COLLECTION: &str = "newsposts";
 pub const EMAIL_REQUEST_COLLECTION: &str = "emails";
 
+pub const PUBLIC_IP_AND_HOST: &str = "127.0.0.1:4200";
+
 pub struct Database {
     client: Client
 }
@@ -106,7 +108,7 @@ impl Database {
         for doc in cursor {
             let d = doc.unwrap();
             docs.push(
-                bson::from_bson::<T>(bson::Bson::Document(d)).unwrap()
+                bson::from_bson::<T>(bson::Bson::Document(d)).expect("Failed to convert bson document into the given type")
             );
         };
         docs
@@ -193,13 +195,14 @@ impl Database {
     }
 }
 
+// All of these tests need to be rewritten
 #[test]
 fn news_posts_test() {
     let mut connection = Database::new();
 
     connection.erase_from_collection_where(NEWS_POST_COLLECTION, doc!{});
 
-    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
+    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION, None, None);
 
     assert!(posts.len() == 0);
 
@@ -213,13 +216,13 @@ fn news_posts_test() {
 
     connection.add_news_post(p1);
 
-    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
+    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION, None, None);
 
     assert!(posts.len() == 1);
 
     connection.erase_from_collection_where(NEWS_POST_COLLECTION, doc!{});
 
-    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION);
+    let posts = connection.get_all_documents::<NewsPost>(NEWS_POST_COLLECTION, None, None);
 
     assert!(posts.len() == 0);
 }

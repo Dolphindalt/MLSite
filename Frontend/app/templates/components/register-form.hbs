@@ -1,10 +1,19 @@
-<form {{action 'register' on='submit'}}>
-    {{input id='passwdd' placeholder='Create a password' type='password' value=passwd}}
-    {{input id='passwd2' placeholder='Confirm password' type='password' value=passwd2}}
-    <button type="submit">Register</button>
-    {{#if errorMessage}}
-        <p>{{errorMessage}}</p>
-    {{/if}}
-</form>
- 
+{{#if registering}}
+<div>
+    <h1>Hello {{data.email}}</h1>
+    <p>Please create a strong password to protect your account.</p>
+    <form {{action 'register' on='submit'}}>
+        {{input id='passwdd' class='login_input_general' placeholder='Create a password' type='password' value=passwd}}
+        {{input id='passwd2' class='login_input_general' placeholder='Confirm password' type='password' value=passwd2}}
+        <div class='button-wrapper'>
+            <button id='button' type="submit">Register</button>
+        </div>
+        {{#if errorMessage}}
+            <span class='error'>{{errorMessage}}</span>
+        {{/if}}
+    </form>
+</div>
+{{else}}
+    <h1>You are now registered. Try loging in.</h1>
+{{/if}}
 {{yield}}

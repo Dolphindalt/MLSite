@@ -7,7 +7,7 @@ const Router = EmberRouter.extend({
 });
  
 Router.map(function() {
-  this.route('register', { path: "/register/:linkUuid" });
+  this.route('register', { path: "/register/:linkuuid" });
 
   this.route('home', function() {
     this.route('create-post');

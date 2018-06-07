@@ -49,6 +49,7 @@ fn main() {
     router.get("/news-post-models/:id", handlers.news_post_handler, "home_newspost_id");
 
     router.post("/register", handlers.user_created_handler, "user_pending");
+    router.get("/register/:linkUuid", handlers.get_user_register_handler, "prompting_user_password");
     router.post("/register/:linkUuid", handlers.user_register_handler, "user_registered");
     router.post("/login", handlers.login_request_handler, "user_login");
 

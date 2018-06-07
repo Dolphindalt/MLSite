@@ -20,6 +20,7 @@ use models::User;
 use models::Email;
 use database::USER_COLLECTION;
 use database::EMAIL_REQUEST_COLLECTION;
+use database::PUBLIC_IP_AND_HOST;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 const STAFF_RANKS: [&str; 6] = [ "Owner", "Developer", "Builder", "Admin", "SMod", "Mod" ];
@@ -64,8 +65,9 @@ impl Handler for UserCreateHandler {
 
             lock!(self.database).add_email_request(email.clone());
             // this function will need to be changed
-            let content = format!("Navigate to this link to complete the registration process: <a href='localhost:4200/register/{}'>localhost:4200/register/{}</a>", 
-                email.linkUuid, email.linkUuid);
+            let link = format!("{}/register/{}", PUBLIC_IP_AND_HOST, email.linkUuid);
+            let content = format!("Navigate to this link to complete the registration process: <a href='{}'>{}</a>", 
+                &link, &link);
 
             let builder = match EmailBuilder::new()
                 .to(email.email)
@@ -136,10 +138,10 @@ impl UserRegisterHandler {
 impl Handler for UserRegisterHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let link_uuid = get_http_param!(req, "linkUuid");
-        
-        let opt = lock!(self.database).get_all_documents::<User>(EMAIL_REQUEST_COLLECTION, Some(doc!{ "linkUuid" => &link_uuid }), None);
 
-        if opt.len() != 1 {
+        let opt = lock!(self.database).get_all_documents::<Email>(EMAIL_REQUEST_COLLECTION, Some(doc!{ "linkUuid" => link_uuid }), None);
+
+        if opt.len() < 1 {
             return Ok(Response::with((status::Conflict, "Your link was invalid or an error has occured.")));
         }
 
@@ -154,8 +156,9 @@ impl Handler for UserRegisterHandler {
         };
 
         lock!(self.database).add_user(user);
+        lock!(self.database).erase_from_collection_where(EMAIL_REQUEST_COLLECTION, doc!{ "linkUuid" => link_uuid });
 
-        Ok(Response::with(status::Ok))
+        Ok(Response::with((status::Ok, "{}")))
     }
 }
 

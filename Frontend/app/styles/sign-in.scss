@@ -50,6 +50,10 @@
         @extend %login-input;
     }
 
+    .login_input_general {
+        @extend %login-input;
+    }
+
     .button-wrapper {
         margin: 20px;
     }

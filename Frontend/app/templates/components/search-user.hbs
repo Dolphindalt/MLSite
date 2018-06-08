@@ -1,3 +1,6 @@
-{{input type='text' placeholder='Search Player'}}
+<form {{action 'search' on='submit'}}>
+    {{input type='text' placeholder='Search Player'}}
+    <button type='submit'><i class='fa fa-search'></i></button>
+</form>
 
 {{yield}}

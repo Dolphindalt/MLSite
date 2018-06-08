@@ -10,7 +10,6 @@ export default Component.extend({
     currentDate: service('current-date'),
     uuid: service('uuid-to-username'),
     errorMessage: "",
-    router: service(),
     registering: true,
     actions: {
         success() {
@@ -50,22 +49,16 @@ export default Component.extend({
                     })
                 }).done(() => {
                     run(() => {
-                        console.debug("11");
                         resolve();
                     });
                 }).fail((xhr) => {
-                    console.debug("12");
                     reject(xhr.responseText);
                 });
             });
 
-            console.debug("1");
             promise.then(() => {
-                console.debug("2");
                 comp.send('success');
-                console.debug("3");
             }).catch((stuff) => {
-                console.debug("4");
                 comp.set('errorMessage', stuff);
             });
         }

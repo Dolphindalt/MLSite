@@ -10,6 +10,7 @@ pub struct NewsPost {
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
 pub struct User {
     pub hashword: String,
+    pub username: String,
     pub email: String,
     pub admin: bool,
     pub date_created: String,

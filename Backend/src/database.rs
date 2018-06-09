@@ -47,6 +47,7 @@ impl Database {
 
         let doc = doc! {
             "hashword": user.hashword,
+            "username": user.username,
             "email": user.email,
             "admin": user.admin,
             "date_created": user.date_created,

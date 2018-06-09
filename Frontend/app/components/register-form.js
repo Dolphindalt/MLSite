@@ -11,6 +11,12 @@ export default Component.extend({
     uuid: service('uuid-to-username'),
     errorMessage: "",
     registering: true,
+    router: service(),
+    session: service('auth-service'),
+    willRender() {
+        if(this.get('session.isAuthenticated') === true)
+            this.get('router').transitionTo('index');
+    },
     actions: {
         success() {
             this.set('registering', false);
@@ -31,35 +37,43 @@ export default Component.extend({
             var hashword = SHA256(passwd).toString();
             var comp = this;
             
-            var promise = new Promise(function(resolve, reject) {
-                $.ajax({
-                    type: "POST",
-                    url: "http://127.0.0.1:8000/register/" + comp.get('data.linkUuid'),
-                    dataType: 'json',
-                    contentType: "application/json; charset=utf-8",
-                    crossDomain: true,
-                    data: JSON.stringify({
-                        "email":"", // let the backend deal with this when it validates the url
-                        "hashword":hashword,
-                        "admin":false,
-                        "date_created":comp.get('currentDate').getDate(),
-                        "uuid":comp.get('data.uuid'),
-                        "staff":false,
-                        "rank":"Default"
-                    })
-                }).done(() => {
-                    run(() => {
-                        resolve();
-                    });
-                }).fail((xhr) => {
-                    reject(xhr.responseText);
-                });
-            });
+            comp.get('uuid').uuidToUsername(comp.get('data.uuid')).then((payload) => {
+                var username = payload;
 
-            promise.then(() => {
-                comp.send('success');
-            }).catch((stuff) => {
-                comp.set('errorMessage', stuff);
+                var promise = new Promise(function(resolve, reject) {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://127.0.0.1:8000/register/" + comp.get('data.linkUuid'),
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        crossDomain: true,
+                        data: JSON.stringify({
+                            "email":comp.get('data.email'),
+                            "hashword": hashword,
+                            "username": username,
+                            "admin": false,
+                            "date_created": comp.get('currentDate').getDate(),
+                            "uuid": comp.get('data.uuid'),
+                            "staff":false,
+                            "rank":"Default"
+                        })
+                    }).done(() => {
+                        run(() => {
+                            resolve();
+                        });
+                    }).fail((xhr) => {
+                        reject(xhr.responseText);
+                    });
+                });
+    
+                promise.then(() => {
+                    comp.send('success');
+                }).catch((stuff) => {
+                    comp.set('errorMessage', stuff);
+                });
+            }).catch(() => {
+                this.set('errorMessage', "Failed to resolve username to uuid!");
+                return;
             });
         }
     }

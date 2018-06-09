@@ -58,8 +58,8 @@ fn main() {
     
     router.get("/forums/:category", handlers.get_all_posts_handler, "get_all_posts");
     router.post("/forums/create/:category", handlers.create_post_handler, "create_post");
-
-    router.get("/search/", handlers.search_player_handler, "search_user");
+    
+    router.get("/search/:term", handlers.search_users_handler, "search_users");
 
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);

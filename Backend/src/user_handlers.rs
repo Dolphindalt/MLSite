@@ -152,7 +152,7 @@ impl Handler for UserRegisterHandler {
         if let Ok(user_data) = serde_json::from_str::<User>(&payload) {
             user = user_data;
         } else {
-            return Ok(Response::with(status::BadRequest))
+            return Ok(Response::with((status::BadRequest, "Failed to parse user data!")))
         };
 
         lock!(self.database).add_user(user);
@@ -258,35 +258,32 @@ impl Handler for GetStaffUsersHandler {
     }
 }
 
-pub struct GetRegexUsersHandler {
+pub struct SearchUsersHandler {
     database: Arc<Mutex<Database>>,
 }
 
-impl GetRegexUsersHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> GetRegexUsersHandler {
-        GetRegexUsersHandler { database }
+impl SearchUsersHandler {
+    pub fn new(database: Arc<Mutex<Database>>) -> SearchUsersHandler {
+        SearchUsersHandler { database }
     }
 }
 
-impl Handler for GetRegexUsersHandler {
+impl Handler for SearchUsersHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let mut payload = String::new();
-        try_handler!(req.body.read_to_string(&mut payload));
+        let search_term = String::from(get_http_param!(req, "term")).to_lowercase();
 
-        let search_data: Value = try_handler!(serde_json::from_str(&payload), status::BadRequest);
+        let users = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, None, None);
 
-        let search_string: &str;
-        if let Some(shaky_search) = search_data["data"].as_str() {
-            search_string = shaky_search;
-        } else {
-            return Ok(Response::with(status::Ok));
-        };
+        let mut results = Vec::new();
+        for u in &users // O(n)
+        {
+            if u.username.to_lowercase().contains(&search_term)
+            {
+                results.push(u);
+            }
+        }
 
-        let formated_search_string = format!("/{}/", search_string);
-
-        let docs = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, Some(doc!{ "username" => formated_search_string }), None);
-        let data = try_handler!(json::encode(&docs), status::BadRequest);
-
+        let data = try_handler!(json::encode(&results), status::BadRequest);
         Ok(Response::with((status::Ok, data)))
     }
 }

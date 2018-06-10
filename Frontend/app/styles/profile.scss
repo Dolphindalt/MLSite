@@ -1,3 +1,91 @@
+// Profile search results style
+// Slim profile
 .slim-profile-wrapper {
-     
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.slim-profile-div {
+    padding: 8px;
+
+    %right-border-radius {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    a {
+        text-decoration: none;
+        display: table;
+        background-color: #ddd;
+        @extend %right-border-radius;
+    }
+
+    img {
+        display: block;
+        height: inherit;
+        width: inherit;
+        padding: none;
+        margin: none;
+    }
+
+    div {
+        display: table-cell;
+        padding: 0px 10px;
+    }
+
+    %slim-profile-rank {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 22px;
+        color: white;
+        font-weight: 400;
+        @extend %right-border-radius;
+    }
+
+    .slim-profile-Default {
+        @extend %slim-profile-rank;
+        color: black;
+    }
+
+    .slim-profile-Developer {
+        @extend %slim-profile-rank;
+        background-color: $developer-color;
+    }
+
+    .slim-profile-Owner {
+        @extend %slim-profile-rank;
+        background-color: $owner-color;
+    }
+
+    .slim-profile-Builder {
+        @extend %slim-profile-rank;
+        background-color: $builder-color;
+    }
+
+    .slim-profile-Admin {
+        @extend %slim-profile-rank;
+        background-color: $admin-color;
+    }
+
+    .slim-profile-SMod {
+        @extend %slim-profile-rank;
+        background-color: $smod-color;
+    }
+
+    .slim-profile-Mod {
+        @extend %slim-profile-rank;
+        background-color: $mod-color;
+    }
+
+    .slim-profile-nametag {
+        font-family: Verdana, Arial, sans-serif !important;
+        color: black;
+        font-size: 20px;
+        font-weight: 400;
+    }
+
+    .center-vert {
+        vertical-align: middle;
+    }
 }

@@ -4,13 +4,13 @@
     <div class='nav-flex-container'>
       <ul>
         {{#link-to "home.staff"}}Staff{{/link-to}}
+        <li>{{sign-in-or-logout-link}}</li>
       </ul>
       <div>
         {{#link-to "index"}}<span><strong>Medieval</strong> Lords</span>{{/link-to}}
       </div>
       <ul>
         <li>{{search-user}}</li>
-        <li>{{sign-in-or-logout-link}}</li>
       </ul>
     </div>
   </nav>

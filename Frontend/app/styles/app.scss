@@ -96,6 +96,8 @@ $a-tags-hover: 'a:active, a:hover';
 
             li {
                 display: inline-block;
+                margin-left: 2em;
+                margin-right: 2em;
             }
         }
 
@@ -111,7 +113,31 @@ $a-tags-hover: 'a:active, a:hover';
 }
 
 .search-bar-wrapper {
+    display: inline-block;
 
+    input {
+        border: 2px solid #cccccc;
+        padding: 5px;
+        margin: 10px;
+        margin-right: 0px;
+    }
+
+    button {
+        padding: 5px 12px;
+        background-color: #4b65b8; 
+        color: white;
+        text-transform: uppercase;
+        border-top: 2px solid #cccccc;
+        border-right: 2px solid #cccccc;
+        border-bottom: 2px solid #cccccc;
+        border-left: none;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background-color: #6175b6;
+    }
 }
 
 .main-centered-container {

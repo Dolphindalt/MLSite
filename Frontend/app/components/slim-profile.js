@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
-    classNames: ['slim-profile-wrapper'],
+    classNames: ['slim-profile-div'],
     tagName: 'div',
     username: "",
     utu: service('uuidToUsername'),

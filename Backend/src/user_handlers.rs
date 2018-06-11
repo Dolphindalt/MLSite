@@ -283,6 +283,11 @@ impl Handler for SearchUsersHandler {
             }
         }
 
+        if results.len() == 0
+        {
+            return Ok(Response::with((status::Conflict, "No search results")));
+        }
+
         let data = try_handler!(json::encode(&results), status::BadRequest);
         Ok(Response::with((status::Ok, data)))
     }

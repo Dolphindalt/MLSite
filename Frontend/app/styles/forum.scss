@@ -24,6 +24,7 @@
 
 .forum-box tbody {
     margin-top: 0;
+    border: 1px solid #dddddd;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
@@ -36,11 +37,47 @@
     padding: 0;
 }
 
-.forum-padding div {
-    padding: 10px;
+.forum-padding {
+    margin: auto;
 }
 
 #forum-logo-box {
     width: 64px;
     height: 64px;
+}
+
+.forum-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.forum-container h2 {
+    font-size: 20px;
+    margin: 0;
+    color: #337ab7;
+}
+
+.forum-container p {
+    font-size: 16px;
+    color: #555555;
+    margin: 0;
+    margin-top: 0.6em;
+}
+
+.thread-name {
+    font-size: 16px;
+    color: #337ab7;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    white-space: nowrap;
+}
+
+.thread-support {
+    font-size: 14px;
+    color: #555555;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    white-space: nowrap;
 }

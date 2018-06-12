@@ -3,15 +3,15 @@
   <nav id='home-nav'>
     <div class='nav-flex-container'>
       <ul>
-        <li>{{#link-to "forums"}}Forum{{/link-to}}</li>
-        <li>{{#link-to "home.staff"}}Staff{{/link-to}}</li>
-        <li>{{sign-in-or-logout-link}}</li>
+        <li>{{#link-to "forums"}}<i class="fa fa-server" aria-hidden="true"></i> Forums{{/link-to}}</li>
+        <li>{{#link-to "home.staff"}}<i class="fa fa-users" aria-hidden="true"></i> Staff{{/link-to}}</li>
       </ul>
       <div>
         {{#link-to "index"}}<span><strong>Medieval</strong> Lords</span>{{/link-to}}
       </div>
       <ul>
         <li>{{search-user}}</li>
+        <li>{{sign-in-or-logout-link}}</li>
       </ul>
     </div>
   </nav>

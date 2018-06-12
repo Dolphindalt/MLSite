@@ -1,4 +1,5 @@
 import Route from '@ember/routing/route';
+import $ from 'jqeury';
 
 export default Route.extend({
     model(params) {

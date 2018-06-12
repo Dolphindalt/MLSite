@@ -8,19 +8,21 @@
 </div>
 
 <div id='news-header-padding' class='main-centered-container'>
-    <div class='fancy-header' style='text-align: left !important; margin-bottom: 15px;'>Medieval Lords Forums</div>
     <table class='forum-box'>
         <thead>
             <tr>
-                <th style='text-align: left; color: #111111 !important;'>Medieval Lords MC</th>
+                <th style='float: left; margin-left: 12px;'>Medieval Lords Minecraft Server</th>
                 <th>Statistics</th>
                 <th>Lastest Thread</th>
             </tr>
         </thead>
         <tbody>
-            {{forum-category}}
-            {{forum-category}}
-            {{forum-category}}
+            {{forum-category category_name='Annoucements'
+            blurt='Important information regarding the server.' }}
+            {{forum-category category_name='Community Suggestions'
+            blurt='A place to organize and discuss community input.' }}
+            {{forum-category category_name='Development Updates'
+            blurt='Information about upcoming new features.' }}
         </tbody>
     </table>
 </div>

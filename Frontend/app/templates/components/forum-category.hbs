@@ -12,14 +12,14 @@
     </td>
     <td>
         <div class='forum-padding special-centering' style='max-width: 200px;'>
-            <p><i class="far fa-comment"></i> 10 Threads</p>
-            <p><i class="far fa-comments"></i> 1,000 Posts</p>
+            <p><i class="far fa-comment"></i> {{data.threads}} Threads</p>
+            <p><i class="far fa-comments"></i> {{data.posts}} Posts</p>
         </div>
     </td>
     <td>
         <div class='forum-padding' style='max-width: 150px;'>
-            <p class='thread-name'>Thread name but very damn long, longer than it really should be, right?</p>
-            <p class='thread-support'>By Dolphindalt</p>
+            <p class='thread-name'>{{data.last_thread}}</p>
+            <p class='thread-support'>{{#if data.last_thread_by}}by {{data.last_thread_by}}{{/if}}</p>
         </div>
     </td>
 </tr>

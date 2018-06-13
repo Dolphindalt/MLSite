@@ -58,6 +58,7 @@ fn main() {
     
     router.get("/forums/:category", handlers.get_all_posts_handler, "get_all_posts");
     router.post("/forums/create/:category", handlers.create_post_handler, "create_post");
+    router.get("/forums/stats/category/:category", handlers.get_category_stats_and_last_post, "get_category_stats");
     
     router.get("/search/:term", handlers.search_users_handler, "search_users");
 

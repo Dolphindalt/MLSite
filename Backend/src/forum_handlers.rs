@@ -9,6 +9,7 @@ use serde_json;
 use serde_json::Value;
 use router::Router;
 use bson;
+use mongodb::coll::options::{FindOptions};
 
 use models::ForumPost;
 use models::Post;
@@ -77,5 +78,45 @@ impl Handler for CreatePostHandler {
             lock!(self.database).add_forum_post(category, new_chain);
             Ok(Response::with(status::Ok))
         }
+    }
+}
+
+pub struct GetCategoryStatsAndLastPost {
+    database: Arc<Mutex<Database>>
+}
+
+impl GetCategoryStatsAndLastPost {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetCategoryStatsAndLastPost {
+        GetCategoryStatsAndLastPost { database }
+    }
+}
+
+impl Handler for GetCategoryStatsAndLastPost {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let category = get_http_param!(req, "category");
+        let forum_posts = lock!(self.database).get_all_documents::<ForumPost>(category, None, None);
+        let total_threads = forum_posts.len();
+        let mut total_posts = 0;
+        
+        for forum_post in &forum_posts {
+            total_posts = total_posts + forum_post.posts.len();
+        }
+
+        let mut fo = FindOptions::new();
+        fo.sort = Some(doc!{"_id" => -1});
+
+        let last_post = lock!(self.database).find_one_document::<ForumPost>(category, None, Some(fo));
+        let (title, author);
+        if let Some(lp) = last_post {
+            title = lp.posts[0].title.clone();
+            author = lp.posts[0].author.clone();
+        } else {
+            title = String::from("There are no posts");
+            author = String::from("");
+        };
+
+        let payload = format!("{{ \"threads\" : \"{}\", \"posts\" : \"{}\", \"last_thread\" : \"{}\", \"last_thread_by\" : \"{}\"}}", total_threads, total_posts, title, author);
+
+        Ok(Response::with((status::Ok, payload)))
     }
 }

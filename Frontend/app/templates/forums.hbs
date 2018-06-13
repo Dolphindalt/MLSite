@@ -3,7 +3,7 @@
         <img class='home-image' src='assets/images/forum_background.png'>
     </div>
     <div class='home-header-wrapper' style="z-index: 97">
-        <img class='home-image' src='assets/images/forums_title.png' style='width: 40%;'>
+        <h1 class='layered-picture'>Forums</h1>
     </div>
 </div>
 
@@ -11,9 +11,9 @@
     <table class='forum-box'>
         <thead>
             <tr>
-                <th style='float: left; margin-left: 12px;'>Medieval Lords Minecraft Server</th>
-                <th>Statistics</th>
-                <th>Lastest Thread</th>
+                <th style='float: left; width: 60%;'><div style='text-align: left'>Medieval Lords Minecraft Server</div></th>
+                <th><div>Statistics</div></th>
+                <th><div>Lastest Post</div></th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +23,20 @@
             blurt='A place to organize and discuss community input.' }}
             {{forum-category category_name='Development Updates'
             blurt='Information about upcoming new features.' }}
+        </tbody>
+    </table>
+
+    <table class='forum-box'>
+        <thead>
+            <tr>
+                <th style='float: left; width: 60% !important;'><div style='text-align: left'>Server Discussion</div></th>
+                <th><div>Statistics</div></th>
+                <th><div>Lastest Post</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{forum-category category_name='General Discussion'
+            blurt='Discuss anything related to Medival Lords here.' }}
         </tbody>
     </table>
 </div>

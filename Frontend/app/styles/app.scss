@@ -152,3 +152,16 @@ $a-tags-hover: 'a:active, a:hover';
     background-color: #efefef;
     border: solid 1px #dddddd;
 }
+
+.layered-picture {
+    font-size: 40px;
+    top: calc(150px - 44px);
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    padding: 20px;
+    font-family: Helvetica, sans-serif;
+    font-weight: 100;
+    background-color: rgba(0, 0, 0, .14);
+    color: white;
+}

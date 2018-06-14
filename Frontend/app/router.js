@@ -14,12 +14,11 @@ Router.map(function() {
     this.route('view-news', { path: "/view-news/:uuid" });
     this.route('staff');
     this.route('search', { path: "/search/:term" });
+    this.route('forums-listings', { path: "/forums-listings/:category/:page" });
   });
   this.route('profile', { path: "/profile/:uuid" });
   this.route('admin-panel');
-  this.route('forums', function() {
-    this.route('listings', { path: "/listings/:category/:page" });
-  });
+  this.route('forums', function() {});
 });
 
 export default Router;

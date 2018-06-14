@@ -56,6 +56,7 @@ pub struct Handlers {
     pub get_all_posts_handler: GetAllPostsHandler,
     pub create_post_handler: CreatePostHandler,
     pub get_category_stats_and_last_post: GetCategoryStatsAndLastPost,
+    pub get_forum_listing_data: GetForumListingData,
     pub get_user_register_handler: GetUserRegisterFormHandler,
     pub search_users_handler: SearchUsersHandler,
 }
@@ -76,6 +77,7 @@ impl Handlers {
             get_all_posts_handler: GetAllPostsHandler::new(db.clone()),
             create_post_handler: CreatePostHandler::new(db.clone()),
             get_category_stats_and_last_post: GetCategoryStatsAndLastPost::new(db.clone()),
+            get_forum_listing_data: GetForumListingData::new(db.clone()),
             get_user_register_handler: GetUserRegisterFormHandler::new(db.clone()),
             search_users_handler: SearchUsersHandler::new(db.clone()),
         }

@@ -1,0 +1,8 @@
+<div class='main-centered-container'>
+    {{#if model}}
+        {{post-list data=model cname=forum-thread-listing}}
+    {{else}}
+        <h2>No forum threads have been created yet!</h2>
+    {{/if}}
+</div>
+{{outlet}}

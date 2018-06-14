@@ -120,3 +120,57 @@ impl Handler for GetCategoryStatsAndLastPost {
         Ok(Response::with((status::Ok, payload)))
     }
 }
+
+pub struct GetForumListingData {
+    database: Arc<Mutex<Database>>
+}
+
+impl GetForumListingData {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetForumListingData {
+        GetForumListingData { database }
+    }
+}
+
+const POSTINCR: usize = 10;
+
+impl Handler for GetForumListingData {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let category = get_http_param!(req, "category");
+        let mut page = try_handler!(get_http_param!(req, "page").to_string().parse::<usize>(), status::BadRequest);
+
+        let forum_posts = lock!(self.database).get_all_documents::<ForumPost>(category, None, None);
+
+        let total_threads = &forum_posts.len();
+        let max_page = (total_threads / POSTINCR) + match total_threads % 10 {
+            0 => 0,
+            _ => 1
+        };
+
+        if max_page == 0 {
+            return Ok(Response::with((status::Ok, "[]")));
+        }
+
+        if page <= 0 {
+            page = 1;
+        } else if page > max_page {
+            page = max_page;
+        }
+
+        page = page - 1;
+
+        let mut start = page * POSTINCR;
+        let end = page * POSTINCR + POSTINCR;
+        let mut post_data = Vec::new();
+        loop {
+            if &start >= total_threads || start == end {
+                break;
+            }
+            post_data.push(&forum_posts[start].posts[0]);
+            start = start + 1;
+        }
+        
+        let payload = try_handler!(json::encode(&post_data), status::BadRequest);
+
+        Ok(Response::with((status::Ok, payload)))
+    }
+}

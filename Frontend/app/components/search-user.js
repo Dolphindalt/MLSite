@@ -9,7 +9,6 @@ export default Component.extend({
     actions: {
         search() {
             let value = $("input")[0].value;
-            console.log(value);
             if(value == null || value === "")
                 return;
             this.get('router').transitionTo('home.search', value);

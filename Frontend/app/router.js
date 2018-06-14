@@ -17,7 +17,9 @@ Router.map(function() {
   });
   this.route('profile', { path: "/profile/:uuid" });
   this.route('admin-panel');
-  this.route('forums');
+  this.route('forums', function() {
+    this.route('listings', { path: "/listings/:category/:page" });
+  });
 });
 
 export default Router;

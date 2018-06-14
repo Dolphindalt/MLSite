@@ -5,7 +5,7 @@
                 <img id='forum-logo-box' src='assets/images/full_logo.png'/ style='padding-top: 8px;'>
             </div>
             <div class='forum-container'>
-                <h2><a>{{category_name}}</a></h2>
+                <h2>{{#link-to "forums.listings" category_name 1}}{{category_name}}{{/link-to}}</h2>
                 <p>{{blurt}}</p>
             </div>
         </div>

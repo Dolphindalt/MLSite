@@ -1,25 +1,27 @@
-<tr>
-    <td style='text-align: left; max-width: 300px;'>
-        <div class='forum-padding'>
-            <div class='forum-container' style='margin-left: 12px;'>
-                <img id='forum-logo-box' src="https://visage.surgeplay.com/face/64/{{unbound data.author}}" style='padding-top: 8px;'>
+{{#each-in data as |key value|}}
+    <tr>
+        <td style='text-align: left; max-width: 300px;'>
+            <div class='forum-padding'>
+                <div class='forum-container' style='margin-left: 12px;'>
+                    <img id='forum-logo-box' src="https://visage.surgeplay.com/face/64/{{unbound value.author}}" style='padding-top: 8px;'>
+                </div>
+                <div class='forum-container'>
+                    <h2>{{#link-to 'home.forum-thread' category value.uuid}}{{value.title}}{{/link-to}}</h2>
+                    <p>{{value.author}}, {{value.datetime}}</p>
+                </div>
             </div>
-            <div class='forum-container'>
-                <h2><a>{{data.title}}</a></h2>
-                <p>{{data.author}}, {{data.datetime}}</p>
+        </td>
+        <td>
+            <div class='forum-padding special-centering' style='max-width: 200px;'>
+                <p><i class="far fa-comment"></i> {{value.len}} Replies</p>
             </div>
-        </div>
-    </td>
-    <td>
-        <div class='forum-padding special-centering' style='max-width: 200px;'>
-            <p><i class="far fa-comment"></i> 12 Replies</p>
-        </div>
-    </td>
-    <td>
-        <div class='forum-padding' style='max-width: 150px;'>
-            <p class='thread-support'>by Dolphindalt</p>
-            <p class='thread-support'>x days ago</p>
-        </div>
-    </td>
-</tr>
+        </td>
+        <td>
+            <div class='forum-padding' style='max-width: 150px;'>
+                <p class='thread-support'>by Dolphindalt</p>
+                <p class='thread-support'>x days ago</p>
+            </div>
+        </td>
+    </tr>
+{{/each-in}}
 {{yield}}

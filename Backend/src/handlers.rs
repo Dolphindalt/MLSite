@@ -59,6 +59,7 @@ pub struct Handlers {
     pub get_forum_listing_data: GetForumListingData,
     pub post_post_to_thread: PostPostToThread,
     pub post_thread_to_forum: PostThreadToForum,
+    pub get_forum_thread: GetForumThread,
     pub get_user_register_handler: GetUserRegisterFormHandler,
     pub search_users_handler: SearchUsersHandler,
 }
@@ -82,6 +83,7 @@ impl Handlers {
             get_forum_listing_data: GetForumListingData::new(db.clone()),
             post_post_to_thread: PostPostToThread::new(db.clone()),
             post_thread_to_forum: PostThreadToForum::new(db.clone()),
+            get_forum_thread: GetForumThread::new(db.clone()),
             get_user_register_handler: GetUserRegisterFormHandler::new(db.clone()),
             search_users_handler: SearchUsersHandler::new(db.clone()),
         }

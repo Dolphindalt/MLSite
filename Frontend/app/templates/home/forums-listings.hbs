@@ -1,4 +1,4 @@
-<div class='main-centered-container'>
+<div id='news-header-padding' class='main-centered-container'>
     {{#if model}}
         <table class='forum-box'>
             <thead>
@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{post-list data=model.model cname="forum-thread-listing"}}
+                {{forum-thread-listing data=model.model category=model.category page=model.page}}
             </tbody>
         </table>
     {{else}}

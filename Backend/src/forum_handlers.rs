@@ -143,7 +143,7 @@ impl Handler for GetForumListingData {
         let total_threads = &forum_posts.len();
         let max_page = (total_threads / POSTINCR) + match total_threads % 10 {
             0 => 0,
-            _ => 1
+            _ => 1,
         };
 
         if max_page == 0 {
@@ -161,14 +161,18 @@ impl Handler for GetForumListingData {
         let mut start = page * POSTINCR;
         let end = page * POSTINCR + POSTINCR;
         let mut post_data = Vec::new();
+
         loop {
             if &start >= total_threads || start == end {
                 break;
             }
-            post_data.push(&forum_posts[start].posts[0]);
+
+            let mut temp = forum_posts[start].posts[0].clone();
+            temp.uuid = forum_posts[start].chain_uuid.clone();
+            post_data.push(temp.convert(forum_posts[start].posts.len()));
             start = start + 1;
         }
-        
+
         let payload = try_handler!(json::encode(&post_data), status::BadRequest);
 
         Ok(Response::with((status::Ok, payload)))
@@ -239,6 +243,29 @@ impl Handler for PostPostToThread {
             } else {
                 Ok(Response::with((status::Conflict, "Decodeder error!")))
             }
+        } else {
+            Ok(Response::with((status::NotFound, "The thread was lost!")))
+        }
+    }
+}
+
+pub struct GetForumThread {
+    database: Arc<Mutex<Database>>,
+}
+
+impl GetForumThread {
+    pub fn new(database: Arc<Mutex<Database>>) -> GetForumThread {
+        GetForumThread { database }
+    }
+}
+
+impl Handler for GetForumThread {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let category = get_http_param!(req, "category");
+        let uuid = get_http_param!(req, "thread_uuid");
+
+        if let Some(result) = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"chain_uuid" => uuid}), None) {
+            Ok(Response::with((status::Ok, try_handler!(json::encode(&result)))))
         } else {
             Ok(Response::with((status::NotFound, "The thread was lost!")))
         }

@@ -36,6 +36,22 @@ pub struct Post {
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct PostData {
+    pub title: String,
+    pub body: String,
+    pub author: String,
+    pub datetime: String,
+    pub uuid: String,
+    pub len: usize,
+}
+
+impl Post {
+    pub fn convert(self, len: usize) -> PostData {
+        PostData { title: self.title, body: self.body, author: self.author, datetime: self.datetime, uuid: self.uuid, len }
+    }
+}
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
 pub struct ForumPost {
     pub chain_uuid: String,
     pub posts: Vec<Post>,

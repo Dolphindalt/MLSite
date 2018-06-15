@@ -60,6 +60,7 @@ fn main() {
     router.post("/forums/create/:category", handlers.create_post_handler, "create_post");
     router.get("/forums/stats/category/:category", handlers.get_category_stats_and_last_post, "get_category_stats");
     router.get("/forums/:category/:page", handlers.get_forum_listing_data, "get_forum_listings");
+    router.get("forums/thread/:category/:thread_uuid", handlers.get_forum_thread, "get_forum_thread");
 
     router.post("/forums/newthread/:category", handlers.post_thread_to_forum, "create_new_thread");
     router.post("/forums/newpost/:category/:thread_uuid", handlers.post_post_to_thread, "create_new_post");

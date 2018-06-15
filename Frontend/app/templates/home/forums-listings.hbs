@@ -1,6 +1,17 @@
 <div class='main-centered-container'>
     {{#if model}}
-        {{post-list data=model cname=forum-thread-listing}}
+        <table class='forum-box'>
+            <thead>
+                <tr>
+                    <th style='float: left; width: 60%;'><div style='text-align: left'>{{model.category}}</div></th>
+                    <th><div>Statistics</div></th>
+                    <th><div>Lastest Post</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{post-list data=model.model cname="forum-thread-listing"}}
+            </tbody>
+        </table>
     {{else}}
         <h2>No forum threads have been created yet!</h2>
     {{/if}}

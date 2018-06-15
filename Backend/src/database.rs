@@ -134,6 +134,11 @@ impl Database {
             }
     }
 
+    pub fn update_one_document<T>(&self, collection: &str, filter: bson::Document, replacement: bson::Document) {
+        let collection = self.client.db(DB).collection(collection);
+        collection.find_one_and_update(filter, replacement, None);
+    }
+
     /// Finds a document in the given collection with the given uuid.
     /// 
     /// # Examples

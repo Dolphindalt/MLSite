@@ -174,3 +174,73 @@ impl Handler for GetForumListingData {
         Ok(Response::with((status::Ok, payload)))
     }
 }
+
+pub struct PostThreadToForum {
+    database: Arc<Mutex<Database>>,
+}
+
+impl PostThreadToForum {
+    pub fn new(database: Arc<Mutex<Database>>) -> PostThreadToForum {
+        PostThreadToForum { database }
+    }
+}
+
+impl Handler for PostThreadToForum {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let category = get_http_param!(req, "category");
+
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+
+        let post: ForumPost;
+        if let Ok(some_data) = serde_json::from_str::<ForumPost>(&payload) {
+            post = some_data;
+        } else {
+            return Ok(Response::with((status::BadRequest, "Failed to parse post data!")))
+        };
+
+        lock!(self.database).add_forum_post(category, post);
+
+        Ok(Response::with(status::Ok))
+    }
+}
+
+pub struct PostPostToThread {
+    database: Arc<Mutex<Database>>,
+}
+
+impl PostPostToThread {
+    pub fn new(database: Arc<Mutex<Database>>) -> PostPostToThread {
+        PostPostToThread { database }
+    }
+}
+
+impl Handler for PostPostToThread {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let category = get_http_param!(req, "category");
+        let uuid = get_http_param!(req, "thread_uuid");
+
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+
+        let post: Post;
+        if let Ok(some_data) = serde_json::from_str::<Post>(&payload) {
+            post = some_data;
+        } else {
+            return Ok(Response::with((status::BadRequest, "Failed to parse post data!")))
+        };
+
+        if let Some(mut forum_post) = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"uuid" => uuid}), None) {
+            forum_post.posts.push(post);
+
+            if let bson::Bson::Document(document) = bson::to_bson(&forum_post).unwrap() {
+                lock!(self.database).update_one_document::<ForumPost>(category, doc!{"uuid" => uuid}, document);
+                Ok(Response::with(status::Ok))
+            } else {
+                Ok(Response::with((status::Conflict, "Decodeder error!")))
+            }
+        } else {
+            Ok(Response::with((status::NotFound, "The thread was lost!")))
+        }
+    }
+}

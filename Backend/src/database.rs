@@ -107,7 +107,7 @@ impl Database {
         let cursor = collection.find(doc_opt, find_opt).ok().expect("Failed to execute find");
         
         for doc in cursor {
-            let d = doc.unwrap();
+            let d = doc.expect("Unwrapped nothing from bson cursor");
             docs.push(
                 bson::from_bson::<T>(bson::Bson::Document(d)).expect("Failed to convert bson document into the given type")
             );

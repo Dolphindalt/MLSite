@@ -106,16 +106,20 @@ impl Handler for GetCategoryStatsAndLastPost {
         fo.sort = Some(doc!{"_id" => -1});
 
         let last_post = lock!(self.database).find_one_document::<ForumPost>(category, None, Some(fo));
-        let (title, author);
+        let (title, author, last_thread_by_uuid, last_thread_uuid);
         if let Some(lp) = last_post {
             title = lp.posts[0].title.clone();
             author = lp.posts[0].author.clone();
+            last_thread_by_uuid = lp.posts[0].author_uuid.clone();
+            last_thread_uuid = lp.chain_uuid.clone();
         } else {
             title = String::from("There are no posts");
             author = String::from("");
+            last_thread_by_uuid = String::from("");
+            last_thread_uuid = String::from("");
         };
 
-        let payload = format!("{{ \"threads\" : \"{}\", \"posts\" : \"{}\", \"last_thread\" : \"{}\", \"last_thread_by\" : \"{}\"}}", total_threads, total_posts, title, author);
+        let payload = format!("{{ \"threads\" : \"{}\", \"posts\" : \"{}\", \"last_thread\" : \"{}\", \"last_thread_uuid\" : \"{}\", \"last_thread_by\" : \"{}\", \"last_thread_by_uuid\" : \"{}\"}}", total_threads, total_posts, title, last_thread_uuid, author, last_thread_by_uuid);
 
         Ok(Response::with((status::Ok, payload)))
     }
@@ -168,8 +172,9 @@ impl Handler for GetForumListingData {
             }
 
             let mut temp = forum_posts[start].posts[0].clone();
+            let last_poster = forum_posts[start].posts[forum_posts[start].posts.len()-1].author.clone();
             temp.uuid = forum_posts[start].chain_uuid.clone();
-            post_data.push(temp.convert(forum_posts[start].posts.len()));
+            post_data.push(temp.convert(forum_posts[start].posts.len(), last_poster));
             start = start + 1;
         }
 

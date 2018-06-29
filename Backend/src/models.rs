@@ -33,6 +33,7 @@ pub struct Post {
     pub author: String,
     pub datetime: String,
     pub uuid: String,
+    pub author_uuid: String,
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
@@ -42,12 +43,14 @@ pub struct PostData {
     pub author: String,
     pub datetime: String,
     pub uuid: String,
+    pub author_uuid: String,
     pub len: usize,
+    pub last_poster: String,
 }
 
 impl Post {
-    pub fn convert(self, len: usize) -> PostData {
-        PostData { title: self.title, body: self.body, author: self.author, datetime: self.datetime, uuid: self.uuid, len }
+    pub fn convert(self, len: usize, last_poster: String) -> PostData {
+        PostData { title: self.title, body: self.body, author: self.author, datetime: self.datetime, uuid: self.uuid, author_uuid: self.author_uuid, len, last_poster }
     }
 }
 

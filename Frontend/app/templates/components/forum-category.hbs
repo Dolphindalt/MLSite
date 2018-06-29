@@ -18,8 +18,8 @@
     </td>
     <td>
         <div class='forum-padding' style='max-width: 150px;'>
-            <p class='thread-name'>{{data.last_thread}}</p>
-            <p class='thread-support'>{{#if data.last_thread_by}}by {{data.last_thread_by}}{{/if}}</p>
+            <p class='thread-name'>{{#link-to "home.forum-thread" category_name data.last_thread_uuid}}{{data.last_thread}}{{/link-to}}</p>
+            <p class='thread-support'>{{#if data.last_thread_by}}by {{#link-to 'profile' data.last_thread_by_uuid}}{{data.last_thread_by}}{{/link-to}}{{/if}}</p>
         </div>
     </td>
 </tr>

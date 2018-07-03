@@ -24,7 +24,8 @@ export default Component.extend({
                 (function(component) {
                     component.get('auth_service').authenticate({
                         "uuid":uuid,
-                        "hashword":hashword
+                        "hashword":hashword,
+                        "username":username
                     }).then(() => {
                         component.send('hideLogin');
                     }).catch(() => {

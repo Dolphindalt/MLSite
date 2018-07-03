@@ -1,2 +1,29 @@
-
+{{#if session.isAuthenticated}}
+    {{#if thread}}
+    <div class='create-news-post-wrapper'>
+        <div class='create-news-post-heading'>Create a thread</div>
+        <form {{action 'postToCategory' category on='submit'}}>
+            <label>Thread Title</label>
+            {{input value=thread_title}}
+            {{textarea value=thread_body}}
+            <button type='submit'>Create Thread</button>
+            {{#if errorMessage}}
+                <p class='error'>{{errorMessage}}</p>
+            {{/if}}
+        </form>
+    </div>
+    {{/if}}
+    {{#if post}}
+    <div class='create-news-post-wrapper'>
+        <div class='create-news-post-heading'>Create a reply</div>
+        <form {{action 'postToThread' category thread_uuid on='submit'}}>
+            {{textarea value=post_body}}
+            <button type='submit'>Create Post</button>
+            {{#if errorMessage}}
+                <p class='error'>{{errorMessage}}</p>
+            {{/if}}
+        </form>
+    </div>
+    {{/if}}
+{{/if}}
 {{yield}}

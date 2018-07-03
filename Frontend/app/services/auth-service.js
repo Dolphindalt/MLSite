@@ -7,17 +7,22 @@ import { inject as service } from '@ember/service';
 export default Service.extend({
     token: "",
     uuid: "",
+    username: "",
     admin: false,
     isAuthenticated: false,
     adminPriv: service('admin-priv'),
+    utu: service('uuid-to-username'),
     invalidate: function() {
         this.set('isAuthenticated', false);
         this.set('token', '');
-        this.set('admin', false); 
+        this.set('admin', false);
+        this.set('username', '');
+        this.set('uuid', '');
     },
     authenticate: function(data) {
         let comp = this;
         let uuid_data = data.uuid;
+        let username_data = data.username;
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: "POST",
@@ -33,6 +38,7 @@ export default Service.extend({
                     comp.set('isAuthenticated', true);
                     comp.set('token', res.token);
                     comp.set('uuid', uuid_data);
+                    comp.set('username', username_data);
 
                     $.ajaxPrefilter(function(options) {
                         if (!options.beforeSend && comp.get('isAuthenticated')) {

@@ -37,50 +37,6 @@ impl Handler for GetAllPostsHandler {
     }
 }
 
-pub struct CreatePostHandler {
-    database: Arc<Mutex<Database>>,
-}
-
-impl CreatePostHandler {
-    pub fn new(database: Arc<Mutex<Database>>) -> CreatePostHandler {
-        CreatePostHandler { database }
-    }
-}
-
-impl Handler for CreatePostHandler {
-    fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        let category = get_http_param!(req, "category");
-
-        let mut payload = String::new();
-        try_handler!(req.body.read_to_string(&mut payload));
-
-        let the_new_post: Post;
-        if let Ok(post) = serde_json::from_str::<Post>(&payload) {
-            the_new_post = post;
-        } else {
-            return Ok(Response::with(status::BadRequest))
-        };
-
-        // Does a post chain with this uuid already exist?
-        let post_chain = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{ "chain_uuid" : &the_new_post.uuid }), None);
-
-        if let Some(mut chain) = post_chain {
-            chain.posts.push(the_new_post);
-            let doc_update: bson::Document = helpers::encode::<ForumPost>(&chain).unwrap();
-            if lock!(self.database).update_document::<ForumPost>(category, doc!{ "chain_uuid" => &chain.chain_uuid}, doc_update, None) {
-                Ok(Response::with(status::Ok))
-            } else {
-                Ok(Response::with(status::NotFound))
-            }
-        } else {
-            let uuid = the_new_post.uuid.clone();
-            let new_chain = ForumPost::new(uuid, the_new_post);
-            lock!(self.database).add_forum_post(category, new_chain);
-            Ok(Response::with(status::Ok))
-        }
-    }
-}
-
 pub struct GetCategoryStatsAndLastPost {
     database: Arc<Mutex<Database>>
 }
@@ -239,12 +195,14 @@ impl Handler for PostPostToThread {
             return Ok(Response::with((status::BadRequest, "Failed to parse post data!")))
         };
 
-        if let Some(mut forum_post) = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"uuid" => uuid}), None) {
+        let opt = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"chain_uuid" => uuid}), None);
+
+        if let Some(mut forum_post) = opt {
             forum_post.posts.push(post);
 
             if let bson::Bson::Document(document) = bson::to_bson(&forum_post).unwrap() {
-                lock!(self.database).update_one_document::<ForumPost>(category, doc!{"uuid" => uuid}, document);
-                Ok(Response::with(status::Ok))
+                lock!(self.database).replace_one_document(category, doc!{"chain_uuid" => uuid}, document);
+                Ok(Response::with((status::Ok, "{}")))
             } else {
                 Ok(Response::with((status::Conflict, "Decodeder error!")))
             }

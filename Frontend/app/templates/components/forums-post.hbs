@@ -1,5 +1,5 @@
 <div class='forums-post-wrapper'>
-    <div class='forum-post-title'>{{data.title}}</div>
+    {{#if data.title}}<div class='forum-post-title'>{{data.title}}</div>{{/if}}
     <div class='forum-post-content-wrapper'>
         <div class='forum-post-body'>{{data.body}}</div>
         <div class='forum-post-data'>{{data.author}} on {{data.datetime}}</div>

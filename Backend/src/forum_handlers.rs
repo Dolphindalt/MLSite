@@ -64,9 +64,10 @@ impl Handler for GetCategoryStatsAndLastPost {
         let last_post = lock!(self.database).find_one_document::<ForumPost>(category, None, Some(fo));
         let (title, author, last_thread_by_uuid, last_thread_uuid);
         if let Some(lp) = last_post {
+            let m: usize = lp.posts.len()-1;
             title = lp.posts[0].title.clone();
-            author = lp.posts[0].author.clone();
-            last_thread_by_uuid = lp.posts[0].author_uuid.clone();
+            author = lp.posts[m].author.clone();
+            last_thread_by_uuid = lp.posts[m].author_uuid.clone();
             last_thread_uuid = lp.chain_uuid.clone();
         } else {
             title = String::from("There are no posts");

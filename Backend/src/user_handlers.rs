@@ -275,11 +275,11 @@ impl Handler for SearchUsersHandler {
         let users = lock!(self.database).get_all_documents::<User>(USER_COLLECTION, None, None);
 
         let mut results = Vec::new();
-        for u in &users // O(n)
+        for u in users // O(n)
         {
             if u.username.to_lowercase().contains(&search_term)
             {
-                results.push(u);
+                results.push(u.convert());
             }
         }
 

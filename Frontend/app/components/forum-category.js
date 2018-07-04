@@ -6,8 +6,8 @@ export default Component.extend({
     tagName: '',
     didReceiveAttrs() {
         let comp = this;
-        run(() => {
-            $.getJSON("http://127.0.0.1:8000/forums/stats/category/" + this.get('category_name')).done((data) => {
+        $.getJSON("http://127.0.0.1:8000/forums/stats/category/" + this.get('category_name')).done((data) => {
+            run(() => {
                 comp.set('data', data);
             });
         });

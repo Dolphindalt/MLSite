@@ -20,6 +20,22 @@ pub struct User {
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct SafeUser {
+    pub username: String,
+    pub admin: bool,
+    pub date_created: String,
+    pub uuid: String,
+    pub staff: bool,
+    pub rank: String,
+}
+
+impl User {
+    pub fn convert(self) -> SafeUser {
+        SafeUser { username: self.username, admin: self.admin, date_created: self.date_created, uuid: self.uuid, staff: self.staff, rank: self.rank }
+    }
+}
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
 pub struct Email {
     pub uuid: String,
     pub email: String,

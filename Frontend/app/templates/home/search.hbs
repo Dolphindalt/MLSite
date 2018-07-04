@@ -1,7 +1,9 @@
 <div class='main-centered-container'>
     {{#if model}}
         <div class='slim-profile-wrapper'>
-            {{post-list data=model cname="slim-profile"}}
+            {{#each-in model as |key value|}}
+                {{slim-profile data=value}}
+            {{/each-in}}
         </div>
     {{else}}
         <h2>No search results were found!</h2>

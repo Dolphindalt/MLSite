@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
 import $ from 'jquery';
-import { run } from '@ember/runloop';
 
 export default Route.extend({
     model(params) {

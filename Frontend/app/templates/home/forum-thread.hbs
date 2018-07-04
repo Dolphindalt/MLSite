@@ -1,5 +1,5 @@
 <div id='news-header-padding' class='main-centered-container' style='text-align: left;'>
     {{post-list cname='forums-post' data=model.model.posts}}
-    {{post-to-forums post='true' category=model.category thread_uuid=model.thread_uuid}}
+    {{post-to-forums post='true' category=model.category thread_uuid=model.thread_uuid transitionToThread=(action "transitionToThreadFromController")}}
 </div>
 {{outlet}}

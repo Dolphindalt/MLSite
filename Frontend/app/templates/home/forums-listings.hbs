@@ -14,13 +14,13 @@
         </table>
         <ul class='pager'>
         {{#if model.prev}}
-            {{#link-to "home.forum-listings" model.category model.prev class="page-button" }}Previous{{/link-to}}
+            {{#link-to "home.forums-listings" model.category model.prev class="page-button" }}Previous{{/link-to}}
         {{else}}
             <a class='null-page-button'>Previous</a>
         {{/if}}
             {{forum-status-bar category=model.category}}
         {{#if model.next}}
-            {{#link-to "home.forum-listings" model.category model.next class="page-button" }}Next{{/link-to}}
+            {{#link-to "home.forums-listings" model.category model.next class="page-button" }}Next{{/link-to}}
         {{else}}
             <a class='null-page-button'>Next</a>
         {{/if}}

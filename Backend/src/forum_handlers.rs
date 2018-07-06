@@ -13,6 +13,7 @@ use mongodb::coll::options::{FindOptions};
 
 use models::ForumPost;
 use models::Post;
+use models::PostData;
 
 use helpers;
 
@@ -94,6 +95,12 @@ impl GetForumListingData {
 
 const POSTINCR: usize = 10;
 
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+struct ListingPayload {
+    post_data: Vec<PostData>,
+    len: usize,
+}
+
 impl Handler for GetForumListingData {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
@@ -135,7 +142,9 @@ impl Handler for GetForumListingData {
             start = start + 1;
         }
 
-        let payload = try_handler!(json::encode(&post_data), status::BadRequest);
+        let final_data = ListingPayload { post_data, len: total_threads.clone() };
+
+        let payload = try_handler!(json::encode(&final_data), status::BadRequest);
 
         Ok(Response::with((status::Ok, payload)))
     }
@@ -227,9 +236,48 @@ impl Handler for GetForumThread {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
         let uuid = get_http_param!(req, "thread_uuid");
+        let mut page = try_handler!(get_http_param!(req, "page").to_string().parse::<usize>(), status::BadRequest);
 
         if let Some(result) = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"chain_uuid" => uuid}), None) {
-            Ok(Response::with((status::Ok, try_handler!(json::encode(&result)))))
+            let mut forum_thread = result;
+
+            let total_threads = &forum_thread.posts.len();
+            let max_page = (total_threads / POSTINCR) + match total_threads % 10 {
+                0 => 0,
+                _ => 1,
+            };
+
+            if max_page == 0 {
+                return Ok(Response::with((status::Ok, "[]")));
+            }
+
+            if page <= 0 {
+                page = 1;
+            } else if page > max_page {
+                page = max_page;
+            }
+
+            page = page - 1;
+
+            let mut start = page * POSTINCR;
+            let end = page * POSTINCR + POSTINCR;
+            let mut post_data = Vec::new();
+
+            loop {
+                if &start >= total_threads || start == end {
+                    break;
+                }
+                
+                post_data.push(forum_thread.posts[start].clone());
+                
+                start = start + 1;
+            }
+
+            forum_thread.posts = post_data;
+
+            let final_data = forum_thread.convert();
+
+            Ok(Response::with((status::Ok, try_handler!(json::encode(&final_data)))))
         } else {
             Ok(Response::with((status::NotFound, "The thread was lost!")))
         }

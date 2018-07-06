@@ -1,0 +1,4 @@
+{{#if session.isAuthenticated}}
+{{#link-to 'home.new-thread' category=category class="page-button"}}New Thread{{/link-to}}
+{{/if}}
+{{yield}}

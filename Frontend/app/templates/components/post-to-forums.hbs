@@ -1,9 +1,9 @@
 {{#if session.isAuthenticated}}
     {{#if thread}}
-    <div class='create-news-post-wrapper' style='text-align: center !important;'>
+    <div class='create-news-post-wrapper'>
         <div class='create-news-post-heading'>Create a thread</div>
         <form {{action 'postToCategory' category on='submit'}}>
-            <label>Thread Title</label>
+            <label>Title</label>
             {{input value=thread_title}}
             {{textarea value=thread_body}}
             <button type='submit'>Create Thread</button>

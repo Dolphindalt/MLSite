@@ -1,5 +1,17 @@
 <div id='news-header-padding' class='main-centered-container' style='text-align: left;'>
     {{post-list cname='forums-post' data=model.model.posts}}
     {{post-to-forums post='true' category=model.category thread_uuid=model.thread_uuid transitionToThread=(action "transitionToThreadFromController")}}
+    <ul class='pager'>
+        {{#if model.prev}}
+            {{#link-to "home.forum-thread" model.category model.thread_uuid model.prev class="page-button left" }}Previous{{/link-to}}
+        {{else}}
+            <a class='null-page-button left'>Previous</a>
+        {{/if}}
+        {{#if model.next}}
+            {{#link-to "home.forum-thread" model.category model.thread_uuid model.next class="page-button right" }}Next{{/link-to}}
+        {{else}}
+            <a class='null-page-button right'>Next</a>
+        {{/if}}
+    </ul>
 </div>
 {{outlet}}

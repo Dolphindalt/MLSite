@@ -15,7 +15,8 @@ Router.map(function() {
     this.route('staff');
     this.route('search', { path: "/search/:term" });
     this.route('forums-listings', { path: "/forums-listings/:category/:page" });
-    this.route('forum-thread', { path : "/forum-thread/:category/:thread_uuid" });
+    this.route('forum-thread', { path : "/forum-thread/:category/:thread_uuid/:page" });
+    this.route('new-thread', { path: "/new-thread/:category"});
   });
   this.route('profile', { path: "/profile/:uuid" });
   this.route('admin-panel');

@@ -76,8 +76,20 @@ pub struct ForumPost {
     pub posts: Vec<Post>,
 }
 
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+pub struct ForumPostLen {
+    pub chain_uuid: String,
+    pub posts: Vec<Post>,
+    pub len: usize,
+}
+
 impl ForumPost {
     pub fn new(uuid: String, init: Post) -> ForumPost {
         ForumPost { chain_uuid: uuid, posts: vec![init] }
+    }
+
+    pub fn convert(self) -> ForumPostLen {
+        let len = self.posts.len();
+        ForumPostLen { chain_uuid: self.chain_uuid, posts: self.posts, len: len }
     }
 }

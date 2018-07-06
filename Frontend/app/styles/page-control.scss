@@ -1,0 +1,32 @@
+.pager {
+
+    padding: 0;
+    list-style: none;
+    text-align: center;
+
+    %button-style {
+        border-radius: 12px;
+        border: 1px solid #cccccc;
+        padding: 10px;
+        width: 7em;
+        height: 1em;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .page-button, a {
+        @extend %button-style;
+        color: #337ab7;
+        background-color: white;
+    }
+
+    a:hover {
+        background-color: #eeeeee;
+    }
+
+    .null-page-button {
+        @extend %button-style;
+        color: #cccccc;
+    }
+
+}

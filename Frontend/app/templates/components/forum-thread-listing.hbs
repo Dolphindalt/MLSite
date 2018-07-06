@@ -6,7 +6,7 @@
                     <img id='forum-logo-box' src="https://visage.surgeplay.com/face/64/{{unbound value.author_uuid}}" style='padding-top: 8px;'>
                 </div>
                 <div class='forum-container'>
-                    <h2>{{#link-to 'home.forum-thread' category value.uuid}}{{value.title}}{{/link-to}}</h2>
+                    <h2>{{#link-to 'home.forum-thread' category value.uuid 1}}{{value.title}}{{/link-to}}</h2>
                     <p>{{#link-to 'profile' value.author_uuid}}{{value.author}}{{/link-to}}, {{value.datetime}}</p>
                 </div>
             </div>
@@ -18,7 +18,7 @@
         </td>
         <td>
             <div class='forum-padding' style='max-width: 150px;'>
-                <p class='thread-support'>by {{#link-to 'profile' value.author_uuid}}Dolphindalt{{/link-to}}</p>
+                <p class='thread-support'>by {{#link-to 'profile' value.author_uuid}}{{value.author}}{{/link-to}}</p>
                 <p class='thread-support'>x days ago</p>
             </div>
         </td>

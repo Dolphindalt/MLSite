@@ -1,5 +1,5 @@
 <div id='news-header-padding' class='main-centered-container'>
-    {{#if model}}
+    {{#if model.model.post_data}}
         <table class='forum-box'>
             <thead>
                 <tr>
@@ -13,20 +13,23 @@
             </tbody>
         </table>
         <ul class='pager'>
-        {{#if model.prev}}
-            {{#link-to "home.forums-listings" model.category model.prev class="page-button" }}Previous{{/link-to}}
-        {{else}}
-            <a class='null-page-button'>Previous</a>
-        {{/if}}
-            {{forum-status-bar category=model.category}}
-        {{#if model.next}}
-            {{#link-to "home.forums-listings" model.category model.next class="page-button" }}Next{{/link-to}}
-        {{else}}
-            <a class='null-page-button'>Next</a>
-        {{/if}}
-    </ul>
+            {{#if model.prev}}
+                {{#link-to "home.forums-listings" model.category model.prev class="page-button" }}Previous{{/link-to}}
+            {{else}}
+                <a class='null-page-button'>Previous</a>
+            {{/if}}
+                {{forum-status-bar category=model.category}}
+            {{#if model.next}}
+                {{#link-to "home.forums-listings" model.category model.next class="page-button" }}Next{{/link-to}}
+            {{else}}
+                <a class='null-page-button'>Next</a>
+            {{/if}}
+        </ul>
     {{else}}
-        <h2>No forum threads have been created yet!</h2>
+        <h2>No {{model.category}} threads have been created yet!</h2>
+        <ul class='pager'>
+            {{forum-status-bar category=model.category}}
+        </ul>
     {{/if}}
 </div>
 {{outlet}}

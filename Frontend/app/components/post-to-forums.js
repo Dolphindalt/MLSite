@@ -41,7 +41,7 @@ export default Component.extend({
                     })
                 });
             });
-            this.sendAction('transitionToThread', 'home.forum-thread', cat_name, chain_uuid);
+            this.sendAction('transitionToThread', 'home.forum-thread');
         },
         postToThread(cat_name, thread_uuid) {
             let comp = this;
@@ -68,7 +68,7 @@ export default Component.extend({
                 });
             });
 
-            this.sendAction('transitionToThread', 'home.forum-thread', cat_name, thread_uuid);
+            this.sendAction('transitionToThread', 'home.forum-thread');
         }
     }
 });

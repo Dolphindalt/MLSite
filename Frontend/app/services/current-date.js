@@ -39,7 +39,7 @@ export default Service.extend({
             let diff = dd - ldd;
             return diff + " day" + (diff == 1) ? "" : "s" + " ago";
         } else {
-            return "today";
+            return "Today";
         }
     }
 });

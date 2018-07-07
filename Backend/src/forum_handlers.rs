@@ -142,7 +142,7 @@ impl Handler for GetForumListingData {
             start = start + 1;
         }
 
-        let final_data = ListingPayload { post_data, len: total_threads.clone() };
+        let final_data = ListingPayload { post_data, len: total_threads.clone() / POSTINCR + 1 };
 
         let payload = try_handler!(json::encode(&final_data), status::BadRequest);
 
@@ -275,7 +275,8 @@ impl Handler for GetForumThread {
 
             forum_thread.posts = post_data;
 
-            let final_data = forum_thread.convert();
+            let mut final_data = forum_thread.convert();
+            final_data.len = final_data.len / POSTINCR + 1;
 
             Ok(Response::with((status::Ok, try_handler!(json::encode(&final_data)))))
         } else {

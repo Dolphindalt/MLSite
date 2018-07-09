@@ -2,3 +2,4 @@
 **/*.rs.bk
 /.vscode
 email_credentials.txt
+server_credentials.txt

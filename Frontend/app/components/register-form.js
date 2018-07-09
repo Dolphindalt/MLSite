@@ -55,7 +55,8 @@ export default Component.extend({
                             "date_created": comp.get('currentDate').getDate(),
                             "uuid": comp.get('data.uuid'),
                             "staff":false,
-                            "rank":"Default"
+                            "rank":"Default",
+                            "banned":false,
                         })
                     }).done(() => {
                         run(() => {

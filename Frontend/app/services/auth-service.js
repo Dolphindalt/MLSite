@@ -10,6 +10,7 @@ export default Service.extend({
     username: "",
     admin: false,
     isAuthenticated: false,
+    banned: false,
     adminPriv: service('admin-priv'),
     utu: service('uuid-to-username'),
     invalidate: function() {

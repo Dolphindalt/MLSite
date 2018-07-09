@@ -54,6 +54,7 @@ impl Database {
             "uuid": user.uuid,
             "staff": user.staff,
             "rank": user.rank,
+            "banned" : user.banned,
         };
 
         collection.insert_one(doc.clone(), None)

@@ -17,6 +17,7 @@ pub struct User {
     pub uuid: String,
     pub staff: bool,
     pub rank: String,
+    pub banned: bool,
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
@@ -27,11 +28,12 @@ pub struct SafeUser {
     pub uuid: String,
     pub staff: bool,
     pub rank: String,
+    pub banned: bool,
 }
 
 impl User {
     pub fn convert(self) -> SafeUser {
-        SafeUser { username: self.username, admin: self.admin, date_created: self.date_created, uuid: self.uuid, staff: self.staff, rank: self.rank }
+        SafeUser { username: self.username, admin: self.admin, date_created: self.date_created, uuid: self.uuid, staff: self.staff, rank: self.rank, banned: self.banned }
     }
 }
 

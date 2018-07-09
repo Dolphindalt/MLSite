@@ -66,6 +66,8 @@ fn main() {
     
     router.get("/search/:term", handlers.search_users_handler, "search_users");
 
+    router.post("/server/login", handlers.server_login, "server_login");
+
     let mut chain = Chain::new(router);
     chain.link_after(json_content_middleware);
     chain.link_after(cors_after_middleware);

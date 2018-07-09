@@ -61,6 +61,7 @@ pub struct Handlers {
     pub get_forum_thread: GetForumThread,
     pub get_user_register_handler: GetUserRegisterFormHandler,
     pub search_users_handler: SearchUsersHandler,
+    pub server_login: ServerLogin,
 }
 
 impl Handlers {
@@ -84,6 +85,7 @@ impl Handlers {
             get_forum_thread: GetForumThread::new(db.clone()),
             get_user_register_handler: GetUserRegisterFormHandler::new(db.clone()),
             search_users_handler: SearchUsersHandler::new(db.clone()),
+            server_login: ServerLogin::new(db.clone()),
         }
     }
 }

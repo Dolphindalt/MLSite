@@ -287,3 +287,43 @@ impl Handler for SearchUsersHandler {
         Ok(Response::with((status::Ok, data)))
     }
 }
+
+fn grab_server_credentials() -> (String, String)
+{
+    let f = File::open("server_credentials.txt").expect("Failed to open server_credentials.txt");
+    let file = BufReader::new(&f);
+    let mut lines_itr = file.lines().map(|l| l.unwrap());
+    (lines_itr.next().expect("Failed to find email in server_credentials.txt"), 
+        lines_itr.next().expect("Failed to find password in server_credentials.txt"))
+}
+
+pub struct ServerLogin {
+    database: Arc<Mutex<Database>>,
+}
+
+impl ServerLogin {
+    pub fn new(database: Arc<Mutex<Database>>) -> ServerLogin {
+        ServerLogin { database }
+    }
+}
+
+#[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
+struct ServerLoginData { username: String, password: String }
+
+impl Handler for ServerLogin {
+    fn handle(&self, req: &mut Request) -> IronResult<Response> {
+        let mut payload = String::new();
+        try_handler!(req.body.read_to_string(&mut payload));
+        let credentials: ServerLoginData = try_handler!(json::decode(&payload), status::BadRequest);
+
+        let (username, password) = grab_server_credentials();
+
+        if username == credentials.username && password == credentials.password {
+            let token: String = encode(&Header::default(), &credentials, SECRET.as_ref()).unwrap();
+            let token_str = format!("{}\"token\":{:?}{}", "{", &token, "}");
+            return Ok(Response::with((status::Ok, token_str)));
+        }
+
+        Ok(Response::with(status::Forbidden))
+    }
+}

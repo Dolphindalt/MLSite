@@ -44,7 +44,6 @@ export default Component.extend({
             this.sendAction('transitionToThread', 'home.forum-thread');
         },
         postToThread(cat_name, thread_uuid) {
-            let comp = this;
             let post_body = this.get("post_body");
             let author_uuid = this.get("session").get("uuid");
             let author_username = this.get("session").get("username");

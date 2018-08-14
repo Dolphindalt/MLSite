@@ -17,6 +17,8 @@ use models::PostData;
 
 use helpers;
 
+static CATEGORIES: &'static [&str] = &["Announcements", "Community%20Suggestions", "Development%20Updates", "General%20Discussion"]; // %20 is a space
+
 pub struct GetAllPostsHandler {
     database: Arc<Mutex<Database>>,
 }
@@ -27,9 +29,17 @@ impl GetAllPostsHandler {
     }
 }
 
+fn check_valid_category(cat: &str) -> bool {
+    CATEGORIES.contains(&cat)
+}
+
 impl Handler for GetAllPostsHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
+        
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
 
         let forum_posts = lock!(self.database).get_all_documents::<ForumPost>(category, None, None);
         let payload = try_handler!(json::encode(&forum_posts), status::BadRequest);
@@ -51,6 +61,9 @@ impl GetCategoryStatsAndLastPost {
 impl Handler for GetCategoryStatsAndLastPost {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
         let forum_posts = lock!(self.database).get_all_documents::<ForumPost>(category, None, None);
         let total_threads = forum_posts.len();
         let mut total_posts = 0;
@@ -105,6 +118,10 @@ impl Handler for GetForumListingData {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
         let mut page = try_handler!(get_http_param!(req, "page").to_string().parse::<usize>(), status::BadRequest);
+
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
 
         let forum_posts = lock!(self.database).get_all_documents::<ForumPost>(category, None, None);
 
@@ -164,6 +181,10 @@ impl Handler for PostThreadToForum {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
 
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
+
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
 
@@ -194,6 +215,10 @@ impl Handler for PostPostToThread {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let category = get_http_param!(req, "category");
         let uuid = get_http_param!(req, "thread_uuid");
+
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
 
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
@@ -237,6 +262,10 @@ impl Handler for GetForumThread {
         let category = get_http_param!(req, "category");
         let uuid = get_http_param!(req, "thread_uuid");
         let mut page = try_handler!(get_http_param!(req, "page").to_string().parse::<usize>(), status::BadRequest);
+
+        if !check_valid_category(category) {
+            return Ok(Response::with(status::Conflict));
+        }
 
         if let Some(result) = lock!(self.database).find_one_document::<ForumPost>(category, Some(doc!{"chain_uuid" => uuid}), None) {
             let mut forum_thread = result;

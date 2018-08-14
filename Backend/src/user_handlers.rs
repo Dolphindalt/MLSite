@@ -21,6 +21,7 @@ use models::Email;
 use database::USER_COLLECTION;
 use database::EMAIL_REQUEST_COLLECTION;
 use database::PUBLIC_IP_AND_HOST;
+use userdata::extract_server_data_from_header;
 
 pub const SECRET: &str = "fuqufuqwufqwufqwufuphqeffsD";
 const STAFF_RANKS: [&str; 6] = [ "Owner", "Developer", "Builder", "Admin", "SMod", "Mod" ];
@@ -49,6 +50,10 @@ impl Handler for UserCreateHandler {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         let mut payload = String::new();
         try_handler!(req.body.read_to_string(&mut payload));
+
+        if !extract_server_data_from_header(req) {
+            return Ok(Response::with(status::Conflict));
+        }
 
         let email: Email = try_handler!(json::decode(&payload), status::BadRequest);
 
@@ -288,7 +293,7 @@ impl Handler for SearchUsersHandler {
     }
 }
 
-fn grab_server_credentials() -> (String, String)
+pub fn grab_server_credentials() -> (String, String)
 {
     let f = File::open("server_credentials.txt").expect("Failed to open server_credentials.txt");
     let file = BufReader::new(&f);
@@ -308,7 +313,7 @@ impl ServerLogin {
 }
 
 #[derive(Clone, Debug, RustcEncodable, RustcDecodable, Serialize, Deserialize)]
-struct ServerLoginData { username: String, password: String }
+pub struct ServerLoginData { pub username: String, pub password: String }
 
 impl Handler for ServerLogin {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {

@@ -17,7 +17,7 @@ use models::PostData;
 
 use helpers;
 
-static CATEGORIES: &'static [&str] = &["Announcements", "Community%20Suggestions", "Development%20Updates", "General%20Discussion"]; // %20 is a space
+static CATEGORIES: &'static [&str] = &["Announcements", "Community Suggestions", "Development Updates", "General Discussion"]; // %20 is a space
 
 pub struct GetAllPostsHandler {
     database: Arc<Mutex<Database>>,
@@ -30,7 +30,7 @@ impl GetAllPostsHandler {
 }
 
 fn check_valid_category(cat: &str) -> bool {
-    CATEGORIES.contains(&cat)
+    CATEGORIES.contains(&cat.replace("%20", " ").as_str())
 }
 
 impl Handler for GetAllPostsHandler {

@@ -14,8 +14,9 @@ export default Component.extend({
             } else {
                 this.set('data.' + i + '.word', "Replies");
             }
-            this.set('data.' + i + '.timeago', 
-                this.get('date').getHowMuchTimeAgo(this.get('data.postdata.' + i + '.datetime')));
+            let datetime = this.get('data')[i].datetime;
+            let how_long = this.get('date').getHowMuchTimeAgo(datetime);
+            this.set('data.' + i + '.timeago', how_long);
         }
         
     }

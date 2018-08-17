@@ -24,6 +24,7 @@ mod news_post_handlers;
 mod userdata;
 mod forum_handlers;
 mod helpers;
+mod permission;
 
 use database::Database;
 use handlers::*;

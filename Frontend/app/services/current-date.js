@@ -44,7 +44,6 @@ export default Service.extend({
             ret += " ago";
             return ret;
         } else if(dd > ldd) {
-            console.debug(dd + " " + ldd);
             let diff = Math.abs(dd - ldd);
             let ret = "" + diff + " day";
             if (diff != 1)
